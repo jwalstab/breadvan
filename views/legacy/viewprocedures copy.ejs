@@ -4,19 +4,11 @@
 <h3><i class="fa fa-angle-right"></i> Procedures</h3>
 <div class="row mb">
   <div class="content-panel ">
-        <div class="searcher-form">
-                <input type="text" class="searcher-input" id="searchinput" onkeyup="Search(0)" placeholder="Search by date">
-                <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle"type="button" data-toggle="dropdown">Select Search Filter
-                    <span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(0, 'date')">Date</a></li>
-                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(1, 'patient ID')">Patient ID</a></li>
-                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(2, 'proceduralist')">Proceduralist</a></li>
-                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(3, 'reason')">Reason</a></li>
-                    </ul>
-                  </div>
-            </div>
+        <input type="text" id="myInput" onkeyup="Search(0)" placeholder="Search by date..">
+        <input type="text" id="myInput" onkeyup="Search(1)" placeholder="Search by patient ID..">
+        <input type="text" id="myInput" onkeyup="Search(2)" placeholder="Search by patient Name..">
+        <input type="text" id="myInput" onkeyup="Search(3)" placeholder="Search by proceduralist..">
+
     <div class="limited-table" style="height: 400px;" id="tablediv">
       <table cellpadding="0" id="table" cellspacing="0" border="0" class="display table table-bordered" id="hidden-table-info" >
         <thead>
@@ -35,7 +27,7 @@
 
 var cols = ['pdate','pid','proceduralist','reason']
 
-fetch(APIURL + '/getprocedures')
+fetch('http://157.245.56.30:3000/getprocedures')
 .then((resp) => resp.json())
 .then(function(data) {
     if (data.length > 0){
@@ -96,37 +88,32 @@ fetch(APIURL + '/getprocedures')
 </script>
 
 <script>
-        function SetSearchFilter(n, searchby){
-            document.getElementById('searchinput').placeholder = "Search by " + searchby + "...";
-            console.log(document.getElementById('searchinput'));
-            chosenSearchRow = n;
+
+    //SEARCH FUNCTION
+function Search(n) {
+    // Declare variables
+    var input, filter, mtable, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    mtable = document.getElementById("table");
+    tr = mtable.getElementsByTagName("tr");
+
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[n];
+    if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+        } else {
+        tr[i].style.display = "none";
         }
-        
-        var chosenSearchRow = 0;
-            //SEARCH FUNCTION
-        function Search() {
-            // Declare variables
-            var input, filter, mtable, tr, td, i, txtValue;
-            input = document.getElementById("searchinput");
-            console.log(input);
-            filter = input.value.toUpperCase();
-            mtable = document.getElementById("table");
-            tr = mtable.getElementsByTagName("tr");
-        
-            // Loop through all table rows, and hide those who don't match the search query
-            for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[chosenSearchRow];
-            if (td) {
-                txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-                } else {
-                tr[i].style.display = "none";
-                }
-            }
-            }
-        }
-        </script>
+    }
+    }
+}
+</script>
+
+
 
 <script>
     

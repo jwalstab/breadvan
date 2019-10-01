@@ -1,10 +1,62 @@
-#myInput {
-    background-image: url('/css/searchicon.png'); /* Add a search icon to input */
-    background-position: 10px 12px; /* Position the search icon */
-    background-repeat: no-repeat; /* Do not repeat the icon image */
-    width: 100%; /* Full-width */
-    font-size: 16px; /* Increase font-size */
-    padding: 12px 20px 12px 40px; /* Add some padding */
-    border: 1px solid #ddd; /* Add a grey border */
-    margin-bottom: 12px; /* Add some space below the input */
+/* #searchinput {
+    background-image: url('/css/searchicon.png');
+    background-position: 10px 12px;
+    background-repeat: no-repeat; 
+    width: 100%; 
+    font-size: 16px;
+    padding: 12px 20px 12px 40px; 
+    border: 1px solid #ddd; 
+    margin-bottom: 12px; 
+  } */
+
+  /* Create two equal columns that floats next to each other */
+/* .column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+    height: 300px;
+  } */
+  
+  /* Clear floats after the columns */
+/*   .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  } */
+
+
+  .A4 {
+    background: white;
+    width: 21cm;
+    height: 29.7cm;
+    display: block;
+    margin: 0 auto;
+    padding: 10px 25px;
+    margin-bottom: 0.5cm;
+    box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+    overflow-y: hidden;
+    box-sizing: border-box;
   }
+
+  .limited-table {
+    border: 1px solid #ddd;
+    overflow: auto;
+  }
+
+  .searcher-form {
+    /* This bit sets up the horizontal layout */
+    display:flex;
+    flex-direction:row;
+    
+    /* This bit draws the box around it */
+    border:1px solid lightgray;
+    /* I've used padding so you can see the edges of the elements. */
+    padding:2px;
+  }
+
+  .searcher-input {
+    flex-grow:2;
+    border:none;
+  }
+  
+  

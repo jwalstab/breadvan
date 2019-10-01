@@ -1,164 +1,242 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<style type="text/css">
+    * {
+        box-sizing: border-box;
+      }
+      
+      body {
+        background-color: #f1f1f1;
+        padding: 20px;
+        font-family: Arial;
+      }
+      
+      /* Center website */
+      .main {
+        max-width: 1000px;
+        margin: auto;
+      }
+      
+      h1 {
+        font-size: 50px;
+        word-break: break-all;
+      }
+      
+      .row {
+        margin: 8px -16px;
+      }
+      
+      /* Add padding BETWEEN each column (if you want) */
+      .row,
+      .row > .column {
+        padding: 8px;
+      }
+      
+      /* Create four equal columns that floats next to each other */
+      .column {
+        float: left;
+        width: 33%;
+      }
+      
+      /* Clear floats after rows */
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      
+      /* Content */
+      .content {
+        background-color: white;
+        padding: 10px;
+      }
 
-<!-- **********************************************************************************************************************************************************
-        MAIN CONTENT
-        *********************************************************************************************************************************************************** -->
-    <!--main content start-->
-              
-              <!-- <h3><i class="fa fa-angle-right"></i> Colonoscopy Report</h3> -->
-              <!-- BASIC FORM ELELEMNTS -->
-              <div class="row mt">
-                <div class="col-lg-12">
-                  <div class="form-panel">
-                    <img style="float: left; margin: 0px 15px 15px 0px;" src="img/sdslogosq.png"/>
-                    <img style="float: right; margin: 0px 15px 15px 0px;" src="img/id.png"/>
-                    <br><br><br><br>
-                    <div style="text-align: center"><h2>Colonoscopy Report</h1></div>
-                    <br><br><br><br><br>
-                    <form class="form-horizontal style-form" action="submitnewprocedure" method="POST">
-                      <div class="form-group">
-                        <label class="col-sm-2 col-sm-2 control-label">Procedure Date</label>
-                        <div class="col-sm-10">
-                          <input type="text" id="pdate" name="pdate" class="form-control">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                            <label class="col-sm-2 col-sm-2 control-label">Patient ID</label>
-                            <div class="col-sm-10">
-                              <input type="number" id="pid" name="pid" class="form-control">
-                            </div>
-                        </div>
-                      <div class="form-group">
-                            <label class="col-sm-2 col-sm-2 control-label">Proceduralist</label>
-                            <div class="col-sm-10">
-                              <input type="text" name="proceduralist" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                                <label class="col-sm-2 col-sm-2 control-label">Reason for procedure</label>
-                                <div class="col-sm-10">
-                                  <input type="text" name="reason" class="form-control">
-                                </div>
-                        </div>
-                        <div class="form-group">
-                                <label class="col-sm-2 col-sm-2 control-label" rows="5" height =>Findings</label>
-                                <div class="col-sm-10">
-                                    <textarea name="findings" cols="40" rows="5" ></textarea>
-                                </div>
-                        </div>
-                        <br>
-                        <h4 class="mb"><i class="fa fa-angle-right"></i> Bowel Preparation</h4>
-                        <div class="radio">
-                                <label>
-                                  <input type="radio" name="bprep" id="bprep" value="Good" checked>
-                                  Good
-                                  </label>
-                              </div>
-                              <div class="radio">
-                                <label>
-                                  <input type="radio" name="bprep" id="bprep" value="Poor">
-                                  Poor
-                                  </label>
-                        </div>
-                        <br>
-                        <br>
-                        <h4 class="mb"><i class="fa fa-angle-right"></i> Complete Colonoscopy Achieved</h4>
-                        <div class="radio">
-                                <label>
-                                  <input type="radio" name="completecolon" id="completecolon" value="Yes" checked>
-                                  Yes
-                                  </label>
-                              </div>
-                              <div class="radio">
-                                <label>
-                                  <input type="radio" name="completecolon" id="completecolon" value="No">
-                                  No
-                                  </label>
-                        </div>
-                        <br>
-                        <br>
-                        <h4 class="mb"><i class="fa fa-angle-right"></i> Diverticular Disease</h4>
-                        <div class="radio">
-                                <label>
-                                  <input type="radio" name="diverticulardisease" id="diverticulardisease" value="Yes" checked>
-                                  Yes
-                                  </label>
-                              </div>
-                              <div class="radio">
-                                <label>
-                                  <input type="radio" name="diverticulardisease" id="diverticulardisease" value="No">
-                                  No
-                                  </label>
-                        </div>
-                        <br>
-                        <br>
-                        <h4 class="mb"><i class="fa fa-angle-right"></i> Haemorrhoids</h4>
-                        <div class="radio">
-                                <label>
-                                  <input type="radio" name="haemorrhoids" id="haemorrhoids" value="Yes" checked>
-                                  Yes
-                                  </label>
-                              </div>
-                              <div class="radio">
-                                <label>
-                                  <input type="radio" name="haemorrhoids" id="haemorrhoids" value="No">
-                                  No
-                                  </label>
-                        </div>
-                        <br>
-                        <br>
-                        <h4 class="mb"><i class="fa fa-angle-right"></i>Colitis</h4>
-                        <div class="radio">
-                                <label>
-                                  <input type="radio" name="colitis" id="colitis" value="Yes" checked>
-                                  Yes
-                                  </label>
-                              </div>
-                              <div class="radio">
-                                <label>
-                                  <input type="radio" name="colitis" id="colitis" value="No">
-                                  No
-                                  </label>
-                        </div>
-                        <br>
-                        <br>
-                        <h4 class="mb"><i class="fa fa-angle-right"></i> Polyps</h4>
-                        <div class="radio">
-                                <label>
-                                  <input type="radio" name="polyps" id="polyps" value="Yes" checked>
-                                  Yes
-                                  </label>
-                              </div>
-                              <div class="radio">
-                                <label>
-                                  <input type="radio" name="polyps" id="polyps" value="No">
-                                  No
-                                  </label>
-                        </div>
-                        <button type="submit" style="float: right;" class="btn btn-theme">Submit</button>
-                        <br>
-                        <br>
-                    </form>
-                  </div>
+      .qtmpanel {
+        background-color: lightgray;
+        min-height: 600px;
+        max-height: 600px;
+        overflow: scroll;
+      }
+      
+      /* Responsive layout - makes a two column-layout instead of four columns */
+      @media screen and (max-width: 900px) {
+        .column {
+          width: 50%;
+        }
+      }
+      
+      /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+      @media screen and (max-width: 600px) {
+        .column {
+          width: 100%;
+        }
+      }
+</style>
 
-                </div>
+<div class="A4">
+        <img style="float: left; margin: 0px 0px 0px 0px;" src="img/sdslogo.jpg"/>
+        <img style="float: right; margin: 0px 0px 0px 0px;" src="img/idsmall.png"/>
+        <br>
+        <div style="text-align: center"><h2>Colonoscopy Report</h1></div>
+        <br>
+        <form action="submitnewprocedure" method="POST">
+                <h3>Details</h3>
+                <label class="control-label">Procedure Date</label>
+                <input type="text" id="pdate" style="width: 160px;" name="pdate">
+<!--                 <select name="bla">
+                        <option value="saab">Saab</option>
+                        <option value="b">Saabbbbb</option>
+                </select> -->
+                <label class="control-label">Patient ID</label>
+                <input type="number" id="pid" style="width: 160px;" name="pid">
+                <label class="control-label">Proceduralist</label>
+                <input type="text" style="width: 160px;" name="proceduralist">
+                <br><br>
+                <label class="control-label">Reason for procedure</label>
+                <input type="text" name="reason" style="width: 500px; float: right;">
+                <br>
+                <br>
+                <label class="control-label" rows="5" height =>Findings</label>
+                <input type="text" name="findings" cols="40" rows="5" style="width: 500px; float: right;"></textarea>
+                <br><br>
+                <label class="checkbox-inline">
+                        <input type="checkbox" id="inlineCheckbox1" name="polyps" value="polyps"> Bowel Preparation
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="inlineCheckbox2" value="completecolon"> Complete Colonoscopy Achieved
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="inlineCheckbox3" value="haemorrhoids"> Haemorrhoids
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="inlineCheckbox3" value="diverticulardisease"> Diverticular Disease
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="inlineCheckbox3" value="colitis"> Colitis
+                        </label>
+                    </label>
+                    <br><br><br>
+<!--                     <img src="img/pic1.png" style="width: 360px; height: 360px">
+                    <img src="img/pic1.png"style="width: 360px; height: 360px"> -->
+                    <input type="hidden" id="imgbox1" name="imgbox1" value="empty">
+                    <input type="hidden" id="imgbox2" name="imgbox2" value="empty">
+                    <img src="img/selectimg.png" onclick="OpenImageDialogueBox(1)" style="width: 360px; height: 360px" id="imgbtn1">
+                    <img src="img/selectimg.png" onclick="OpenImageDialogueBox(2)" style="width: 360px; height: 360px" id="imgbtn2">
 
-                <!-- col-lg-12-->
-              </div>
+                    <br><br><br>
+                    <label class="control-label">Follow up with doctor required:</label>
+                    <label class="checkbox-inline">
+                            <input type="radio" id="followupradio1" name="followupradio" value="yes"> Yes
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="radio" id="followupradio2" name="followupradio" value="no"> No
+                            </label>
+                        </label>
+                        <br>
+                        <label class="control-label">If yes, details:</label>
+                        <input type="text" style="width: 460px;" name="proceduralist">
+                        <br><br><br>
+                        <label class="control-label">Recommended timeframe for follow up colonoscopy:</label>
+                        <input type="text" onclick="StartDate()" id="fdate" style="width: 160px;" name="fdate"><br>
+                        <p>Or</p>
+                        <input type="checkbox" id="inlineCheckbox2" value="completecolon"> To be discussed at your follow up appointment
+                        <br><br><br><br><br>
+                        <p>Doctor signature:  ______________________________________</p>
+                        <br><br><br>
+                    <button type="submit" style="float: right;" class="btn btn-theme">Submit</button>
+                    
+        </form>
+</div>
 
-          <script>
-              var curTime = new Date();
-                $('#pdate').daterangepicker({
-                    "singleDatePicker": true,
-                    "timePicker": true,
-                    "startDate": curTime,
-                    "endDate": curTime,
-                    locale: {
-                        format: 'DD/MM/YYYY hh:mm A'
-                      }
-                }, function(start, end, label) {
-                  console.log('New date range selected: ' + start.format('YYYY-MM-DD-HH-MM') + ' to ' + end.format('YYYY-MM-DD-HH-MM') + ' (predefined range: ' + label + ')');
-                });
-          </script>
+<div style="position:fixed; top: 10%; left: 30%" id="maingallerydiv">
+    
+    
+</div>
+</div>
+
+<script>
+    var curTime = new Date();
+    $('#pdate').daterangepicker({
+        "singleDatePicker": true,
+        "timePicker": true,
+        "startDate": curTime,
+        "endDate": curTime,
+        locale: {
+            format: 'DD/MM/YYYY hh:mm A'
+            }
+    }, function(start, end, label) {
+        console.log('New date range selected: ' + start.format('YYYY-MM-DD-HH-MM') + ' to ' + end.format('YYYY-MM-DD-HH-MM') + ' (predefined range: ' + label + ')');
+    });
+
+
+    var followUpDateFieldEnabled = false;
+
+    function StartDate(){
+        if (followUpDateFieldEnabled == false){
+            followUpDateFieldEnabled = true
+            $('#fdate').daterangepicker({
+                "singleDatePicker": true,
+                "timePicker": true,
+                "startDate": curTime,
+                "endDate": curTime,
+                locale: {
+                    format: 'DD/MM/YYYY hh:mm A'
+                    }
+            }, function(start, end, label) {
+                console.log('New date range selected: ' + start.format('YYYY-MM-DD-HH-MM') + ' to ' + end.format('YYYY-MM-DD-HH-MM') + ' (predefined range: ' + label + ')');
+            });
+        }
+    }
+</script>
+
+<script>
+        var cols = ['filename'];
+        var selectedImg;
+        var imageBoxOpen;
+        function OpenImageDialogueBox(img){
+            if (imageBoxOpen) {return;}
+            imageBoxOpen = true;
+            if (img == 1){selectedImg = "imgbtn1"}
+            if (img == 2){selectedImg = "imgbtn2"}
+            fetch(APIURL + '/listimages')
+            .then((resp) => resp.json())
+            .then(function(data) {
+                console.log(data);
+                if (data.length > 0){
+                    var mainPanel = document.createElement('div');
+                    mainPanel.innerHTML = '<div class ="qtmpanel" id="mainrow"></div>'
+                    document.getElementById('maingallerydiv').appendChild(mainPanel);
+                    console.log(mainPanel);
+                    data.forEach(element =>
+                    {
+                        var newDiv = document.createElement('div');
+                        fileNameString = "'" + element + "'" // adds quotation marks so clicking on image gets a proper string
+                        txt = '<div class="column"><div class="content"><img onclick="ChooseImage(this.src,' + fileNameString + ')" src="' + APIURL + '/imgsrv/' + element + '" alt="error" style="width:100%; height:225px"><h5>' + element +'</h75></div></div>';
+                        newDiv.innerHTML = txt;
+                        document.getElementById('mainrow').appendChild(newDiv);
+                    });
+                }
+            });
+        }
+
+
+
+function ChooseImage(imgsrc, imgname){
+    var imageToChange = document.getElementById(selectedImg);
+    imageToChange.src = imgsrc;
+    
+    var myNode = document.getElementById("maingallerydiv");
+    while (myNode.firstChild) {
+    myNode.removeChild(myNode.firstChild);
+    }
+    imageBoxOpen = false;
+    if (selectedImg == "imgbtn1"){
+        document.getElementById('imgbox1').value = imgname;
+    }
+    if (selectedImg == "imgbtn2"){
+        document.getElementById('imgbox2').value = imgname;
+    }
+}
+</script>
+
