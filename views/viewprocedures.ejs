@@ -85,13 +85,14 @@ fetch(APIURL + '/getprocedures')
         }
         
         // send POST request
-        fetch('http://127.0.0.1:3000/deleteprocedure', options)
+        fetch(APIURL + '/deleteprocedure', options)
             .then(res => res.json())
             .then(res => console.log(res.msg));
     }
     
     function OpenProcedure(reportID){
         console.log("viewing " + reportID);
+        window.location = APIURL + "/openprocedure/" + reportID
     }
 </script>
 

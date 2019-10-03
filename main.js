@@ -8,21 +8,12 @@ var MongoDb = require('mongodb');
 
 var directoryPath = path.join(__dirname, 'public/imgsrv');
 
-
-fs.readdir(directoryPath, function (err, files) {
-    //handling error
-    if (err) {
-        return console.log('Unable to scan directory: ' + err);
-    } 
-    //listing all files using forEach
-    files.forEach(function (file) {
-        // Do whatever you want to do with the file
-        console.log(file); 
-    });
-});
+bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json({limit: '50mb'}));
 
 // Parse URL-encoded bodies (as sent by HTML forms)
-app.use(express.urlencoded());
+//app.use(express.urlencoded());
 
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
@@ -64,16 +55,32 @@ app.use(function(req, res, next) {
 
 
 //WEB SERVER START //////////////////////////////
-app.get('/', (req, res) => res.render('index'));
+app.get('/', (req, res) => res.render('home'));
 
 app.get('/newprocedure', (req, res) => {
     res.render('newprocedure');
+});
+app.get('/viewprocedure', (req, res) => {
+    res.render('viewprocedure');
+});
+app.get('/openprocedure/:procedureid', (req, res) => {
+    var theId = MongoDb.ObjectId(req.params.procedureid);
+    proceduresdb.collection('procedures').find({_id: theId}).toArray (function(err,docs) {
+        console.log(docs);
+        res.render('openprocedure',{
+            data: docs[0],
+            reportID: req.params.procedureid
+        });
+    });
 });
 app.get('/viewprocedures', (req, res) => {
     res.render('viewprocedures');
 });
 app.get('/gallery', (req, res) => {
     res.render('gallery');
+});
+app.get('/canvas', (req, res) => {
+    res.render('canvas');
 });
 
 app.get('/newpatient', (req, res) => {
@@ -92,9 +99,13 @@ app.get('/viewproceduralists', (req, res) => {
 
 //API SERVER START //////////////////////////////
 app.post('/submitnewprocedure', (req, res) => {
-    console.log(req.body);
-    proceduresdb.collection('procedures').insertOne(req.body).then (function() {
-        console.log('ok')
+    var base64Data = req.body.imgdata.replace(/^data:image\/png;base64,/, "");
+    delete req.body.imgdata;
+    proceduresdb.collection('procedures').insertOne(req.body, function(err,result) {
+        console.log();
+        require("fs").writeFile( directoryPath + "/"+ result.ops[0]._id + ".png", base64Data, 'base64', function(err) {
+        if(err){console.log(err)};
+        });
     });
     res.render('newprocedure');
 });
@@ -140,7 +151,6 @@ app.post('/submitnewpatient', (req, res) => {
     res.render('newpatient');
 });
 app.get('/getpatients', (req, res) => {
-    console.log('getting');
     patientsdb.collection('patients').find({}).toArray (function(err,docs) {
         res.send(docs);
     });
@@ -177,3 +187,41 @@ app.post('/deleteproceduralist', (req, res) => {
         res.send(response);
     });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* app.post('/sendimagedata', (req,res) =>{
+    console.log(req.body.data);
+    var response = {
+        msg: "OK"
+    }
+    //var base64Data = req.body.data;
+    res.send(response);
+}); */
+
+/* fs.readdir(directoryPath, function (err, files) {
+    //handling error
+    if (err) {
+        return console.log('Unable to scan directory: ' + err);
+    } 
+    //listing all files using forEach
+    files.forEach(function (file) {
+        // Do whatever you want to do with the file
+        console.log(file); 
+    });
+}); */

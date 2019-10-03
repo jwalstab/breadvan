@@ -1,0 +1,108 @@
+<canvas id="canvas1" width="360" height="360"></canvas>
+<!-- <img src="imgsrv/scan12062019.png" id="bg" style=> -->
+
+
+<script>
+
+        var canvas = document.getElementById("canvas1");
+        var context = canvas.getContext("2d");
+        var clicking = false;
+
+        var img = new Image();
+        img.src="/imgsrv/scan12062019.png";
+        img.onload=function(){
+            context.drawImage(img, 0, 0);
+        }
+        
+        window.addEventListener('mousemove', draw, false);
+        window.addEventListener('mousedown', Clicking, false);
+        window.addEventListener('mouseup', NotClicking, false);
+
+        function Clicking(e){
+            clicking = true;
+        }
+        function NotClicking(e){
+            var bla = 0;
+            while(bla < 25000){
+                bla++;
+                if (bla == 24999){
+                    clicking = false;
+                }
+            }
+        }
+        function draw(e) {
+            if (clicking){
+                var pos = getMousePos(canvas, e);
+                posx = pos.x;
+                posy = pos.y;
+                context.fillStyle = "#000000";
+                context.fillRect(posx, posy, 4, 4);
+            }
+        }
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
+                y: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
+            };
+        }
+</script>
+
+<!-- <script>
+        var canvas = document.getElementById('demo'), /// canvas element
+        ctx = canvas.getContext('2d'),            /// context
+        line = new Line(ctx),                     /// our custom line object
+                                  /// the image for bg
+    
+    ctx.strokeStyle = "#FF0000";                     /// white line for demo
+    
+    /// start image loading, when done draw and setup 
+    img = new Image;
+    img.onload = start;
+    img.src = 'imgsrv/scan12062019.png';
+    
+    function start() {
+        /// initial draw of image
+        ctx.drawImage(img, 0, 0, demo.width, demo.height);
+    
+        /// listen to mouse move (or use jQuery on('mousemove') instead)
+        canvas.onmousedown = updateLine;
+    }
+
+
+    function updateLine(e) {
+
+        var r = canvas.getBoundingClientRect(),
+            x = e.clientX - r.left,
+            y = e.clientY - r.top;
+    
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+    
+        /// update line object and draw it
+        line.x1 = x;
+        line.y1 = 0;
+        line.x2 = x;
+        line.y2 = canvas.height;
+        line.draw();
+    }
+
+    function Line(ctx) {
+
+        var me = this;
+    
+        this.x1 = 0;
+        this.x2 = 0;
+        this.y1 = 0;
+        this.y2 = 0;
+    
+        /// call this method to update line        
+        this.draw = function() {
+            ctx.beginPath();
+            ctx.moveTo(me.x1, me.y1);
+            ctx.lineTo(me.x2, me.y2);
+            ctx.stroke();
+        }
+    }
+</script> -->
+

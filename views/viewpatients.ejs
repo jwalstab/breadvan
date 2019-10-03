@@ -81,7 +81,7 @@ fetch(APIURL + '/getpatients')
         }
         
         // send POST request
-        fetch('http://127.0.0.1:3000/deletepatient', options)
+        fetch(APIURL + '/deletepatient', options)
             .then(res => res.json())
             .then(res => console.log(res.msg));
     }

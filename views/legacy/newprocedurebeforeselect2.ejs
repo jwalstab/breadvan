@@ -88,17 +88,15 @@
                 <label class="control-label">Procedure Date</label>
                 <input type="text" id="pdate" style="width: 160px;" name="pdate">
                 <label class="control-label">Patient ID</label>
-                <select class="js-example-basic-single" name="pid" id="patientidselectbox" style="width:160px">
-                    <option>
-
-                    </option>
+                <select class="js-example-basic-single" name="pid" id="pidselect" name="patientid" style="width:160px">
+                        <option value="saab">24234</option>
+                        <option value="saab">124</option>
+                        <option value="saab">124</option>
+                        <option value="saab">3234</option>
                 </select>
+                <!-- <input type="number" id="pid" style="width: 160px;" name="pid"> -->
                 <label class="control-label">Proceduralist</label>
-                <select class="js-example-basic-single" name="proceduralist" id="proceduralistselectbox" style="width:160px">
-                        <option>
-                        
-                            </option>
-                </select>
+                <input type="text" style="width: 160px;" name="proceduralist">
                 <br><br>
                 <label class="control-label">Reason for procedure</label>
                 <input type="text" name="reason" style="width: 500px; float: right;">
@@ -108,48 +106,51 @@
                 <input type="text" name="findings" cols="40" rows="5" style="width: 500px; float: right;"></textarea>
                 <br><br>
                 <label class="checkbox-inline">
-                        <input type="checkbox" id="inlineCheckbox1" name="polyps" value="polyps"> Polyps
+                        <input type="checkbox" id="inlineCheckbox1" name="polyps" value="polyps"> Bowel Preparation
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" id="inlineCheckbox2" name="completecolon" value="completecolon"> Complete Colonoscopy Achieved
+                            <input type="checkbox" id="inlineCheckbox2" value="completecolon"> Complete Colonoscopy Achieved
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" id="inlineCheckbox3" name="haemorrhoids" value="haemorrhoids"> Haemorrhoids
+                            <input type="checkbox" id="inlineCheckbox3" value="haemorrhoids"> Haemorrhoids
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" id="inlineCheckbox3" name="diverticulardisease" value="diverticulardisease"> Diverticular Disease
+                            <input type="checkbox" id="inlineCheckbox3" value="diverticulardisease"> Diverticular Disease
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" id="inlineCheckbox3" name="colitis" value="colitis"> Colitis
+                            <input type="checkbox" id="inlineCheckbox3" value="colitis"> Colitis
                         </label>
                     </label>
                     <br><br><br>
+<!--                     <img src="img/pic1.png" style="width: 360px; height: 360px">
+                    <img src="img/pic1.png"style="width: 360px; height: 360px"> -->
+                    <input type="hidden" id="imgbox1" name="imgbox1" value="empty">
+                    <input type="hidden" id="imgbox2" name="imgbox2" value="empty">
+                    <!-- <img src="img/diagram.png" style="width: 360px; height: 360px; margin: 0px 0px 0px 140px;" id="diagram" > -->
                     <canvas id="diagramcanvas" width="360" height="360" style="margin: 0px 0px 0px 140px"></canvas>
-                    <input type="hidden" name="imgdata" id="imgdatainput" value="">
                     <br><br><br>
                     <label class="control-label">Follow up with doctor required:</label>
                     <label class="checkbox-inline">
-                        <input type="radio" id="followupradio1" name="followupradio" value="yes"> Yes
-                    </label>
-                    <label class="checkbox-inline">
-                        <input type="radio" id="followupradio2" name="followupradio" value="no"> No
-                    </label>
-                    <br>
-                    <label class="control-label">If yes, details:</label>
-                    <input type="text" style="width: 460px;" name="followupdetails">
-                    <br><br><br>
-                    <label class="control-label">Recommended timeframe for follow up colonoscopy:</label>
-                    <input type="text" onclick="StartDate()" id="fdate" style="width: 160px;" name="fdate"><br>
-                    <p>Or</p>
-                    <input type="checkbox" id="inlineCheckbox2" value="followupdiscuss"> To be discussed at your follow up appointment
-                    <br><br><br><br><br>
-                    <p>Doctor signature:  ______________________________________</p>
-                    <br><br><br>
-                    
+                            <input type="radio" id="followupradio1" name="followupradio" value="yes"> Yes
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="radio" id="followupradio2" name="followupradio" value="no"> No
+                            </label>
+                        </label>
+                        <br>
+                        <label class="control-label">If yes, details:</label>
+                        <input type="text" style="width: 460px;" name="proceduralist">
+                        <br><br><br>
+                        <label class="control-label">Recommended timeframe for follow up colonoscopy:</label>
+                        <input type="text" onclick="StartDate()" id="fdate" style="width: 160px;" name="fdate"><br>
+                        <p>Or</p>
+                        <input type="checkbox" id="inlineCheckbox2" value="completecolon"> To be discussed at your follow up appointment
+                        <br><br><br><br><br>
+                        <p>Doctor signature:  ______________________________________</p>
+                        <br><br><br>
                     <button type="submit" style="float: right;" class="btn btn-theme">Submit</button>
                     
         </form>
-        <button onclick="imgdata()" style="float: right;" class="btn btn-theme">img</button>
 </div>
 
 <div style="position:fixed; top: 10%; left: 30%" id="maingallerydiv">
@@ -244,33 +245,23 @@ function ChooseImage(imgsrc, imgname){
 </script>
 
 <script>
-        
-//PATIENT ID SELECT BOX SETUP //////////////////////////////////
-$('#patientidselectbox').select2({
-    tags: true
-});
+
+        $(document).ready(function() {
+            
+        });
+
 fetch(APIURL + '/getpatients')
 .then((resp) => resp.json())
 .then(function(data) {
     data.forEach(element =>{
-        var newOption = new Option(element.pid, element.pid, false, false);
-        document.getElementById('patientidselectbox').appendChild(newOption);
+        var newDiv = document.createElement('div');
+        newDiv.innerHTML = '<option value="AL">Alabama</option>'
+        document.getElementById('pidselect').appendChild(newDiv);
     });
-    
-});
-//PROCEDURALIST SELECT BOX SETUP //////////////////////////////////
-$('#proceduralistselectbox').select2({
-    tags: true
-});
-fetch(APIURL + '/getproceduralists')
-.then((resp) => resp.json())
-.then(function(data) {
-    data.forEach(element =>{
-        var newOption = new Option(element.proceduralist, element.proceduralist, false, false);
-        document.getElementById('proceduralistselectbox').appendChild(newOption);
+    $('.js-example-basic-single').select2({
+        tags: true
     });
-    
-});
+    });
 </script>
 
 
@@ -290,25 +281,6 @@ fetch(APIURL + '/getproceduralists')
         window.addEventListener('mousedown', Clicking, false);
         window.addEventListener('mouseup', NotClicking, false);
 
-        function imgdata(){
-            //var imgD = context.getImageData(0,0,canvas.width,canvas.height)
-            //console.log(imgD);
-            var imgObj ={
-                data: canvas.toDataURL()
-            } 
-
-            const options = {
-                method: 'POST',
-                body: JSON.stringify(imgObj),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-            fetch(APIURL + '/sendimagedata', options)
-            .then(res => res.json())
-            .then(res => console.log(res.msg));
-        }
-
         function Clicking(e){
             clicking = true;
         }
@@ -318,8 +290,6 @@ fetch(APIURL + '/getproceduralists')
                 bla++;
                 if (bla == 24999){
                     clicking = false;
-                    document.getElementById("imgdatainput").value = canvas.toDataURL();
-                    console.log(document.getElementById("imgdatainput").value);
                 }
             }
         }
@@ -339,40 +309,4 @@ fetch(APIURL + '/getproceduralists')
                 y: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
             };
         }
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script>
-    /*
-    $(document).ready(function() {
-    
-    });
-    TO LINK PATIENT NAME TO PATIENT ID
-    $('#patientidselectbox').on('select2:select', function (e) { 
-        console.log($('#patientidselectbox').select2('data'));
-        var data = $('#patientidselectbox').select2('data');
-        if ($('#patientnameselectbox').find("option[value='" + data.id + "']").length) {
-            $('#patientnameselectbox').val(data.id).trigger('change');
-        } else { 
-            // Create a DOM Option and pre-select by default
-            var newOption = new Option(data.text, data.id, true, true);
-            $('#patientnameselectbox').append(newOption).trigger('change');
-        } 
-    });
-    $('#patientnameselectbox').select2({
-        tags: true
-    });*/
-
 </script>
