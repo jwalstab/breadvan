@@ -8,6 +8,8 @@ var MongoDb = require('mongodb');
 
 var directoryPath = path.join(__dirname, 'public/imgsrv');
 
+
+
 bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(bodyParser.json({limit: '50mb'}));
@@ -44,6 +46,7 @@ var outsideDatabase;
   //db = database;
   app.listen(port);
   console.log(`Bread Van has sucessfully started on ${port} and connected to the DB ` + new Date().toLocaleDateString() + `  ` + new Date().toLocaleTimeString());
+  StartScanner();
 });
 
 app.use(function(req, res, next) {
@@ -54,6 +57,108 @@ app.use(function(req, res, next) {
   });
 
 
+var scannerDrive = path.join(__dirname, 'public/scanner');
+
+var imgSrvDrive = path.join(__dirname, 'public/imgsrv');
+
+
+function StartScanner(){
+    fs.watch(scannerDrive, function (event, dateFolder) {
+        if (event == "change"){
+            console.log("Change detected, 5 seconds till scan starts")
+            setTimeout(function(){ ScanAction(dateFolder); }, 5000);
+        }
+    });
+}
+
+function ScanAction(dateFolder){
+    fs.readdir(scannerDrive + "/" + dateFolder, function (err, pidFolders){
+        pidFolders.forEach(pidFolder => {
+                var pid_DIR = scannerDrive + "/" + dateFolder + "/" +  pidFolder;
+                fs.readFile(pid_DIR + "/" + 'patient.inf', 'utf8', function(err, data) {
+                if (err){console.log(err)};
+                if (data == null){console.log("NULL"); return}
+                var lines = data.split("\n");
+                var examStartTime = lines[5].slice(12,14) + lines[5].slice(15,17) + lines[5].slice(18,20);
+                var procedureID = pidFolder + dateFolder + examStartTime
+                var query = {
+                    procedureID: procedureID
+                }
+                proceduresdb.collection('procedures').find(query).toArray (function(err,docs) {
+                    if (docs[0] == null){
+                        console.log("Creating new record for " + procedureID)
+                        CreateProcedure(lines,procedureID,pidFolder, pid_DIR);
+                    }
+                    else{
+                        console.log("Record already exists for " + procedureID);
+                    }
+                });
+            });
+        });
+    });
+}
+
+function CreateProcedure(inf,procedureID,patientID, pid_DIR){
+    var imgList = [];
+
+    var createProcedureCheckDuplicateQuery = {
+        procedureID: procedureID
+    }
+
+    proceduresdb.collection('procedures').find(createProcedureCheckDuplicateQuery).toArray (function(err,docs) {
+        if (docs[0] != null){console.log("procedureID " + procedureID + " already exists, not creating new procedure")}
+        else{
+            fs.readdir(pid_DIR, function(err,files){
+                    for (let index = 0; index < files.length; index++) {
+                        const img = files[index];
+                        var imgWithID_DIR = imgSrvDrive + '/' + procedureID;
+                        fs.mkdir(imgWithID_DIR,(err) => {});
+                        fs.copyFile(pid_DIR + '/' + img, imgWithID_DIR + '/' + 'IMG' + index + '.JPG', (err) => {
+                            if (err) throw err;
+                        });
+                        imgList.push('IMG' + index + '.JPG');
+                    }
+                var procedureObject = {
+                    procedureID: procedureID,
+                    new: true,
+                    patientID: patientID,
+                    examDate: inf[4].slice(11,23),
+                    examStart: inf[5].slice(12,20), //cuts off seconds
+                    examEnd: inf[6].slice(10,18),
+                    procedureDate: inf[4].slice(11,23) + " " + inf[5].slice(12,17),
+                    patientName: inf[8].slice(3, -1),
+                    patientDOB: inf[9].slice(6,-1),
+                    patientAge: parseInt(inf[10].slice(6,-1)),
+                    patientSex: inf[11].slice(7,-1),
+                    clinic: inf[12].slice(3, -1),
+                    proceduralist: inf[13].slice(4,-1),
+                    reason: '',
+                    findings: '',
+                    completeColon: '',
+                    haemorrhoids: '',
+                    followUpRadio: '',
+                    followUpDetails: '',
+                    followUpDate: '',
+                    imgs:imgList,
+                    diagramImg: null,
+                }
+                proceduresdb.collection('procedures').insertOne(procedureObject, function(err,result) {
+                    if(err){console.log(err)};
+                });
+            });
+        }
+    });
+}
+
+
+
+
+
+
+
+
+
+  
 //WEB SERVER START //////////////////////////////
 app.get('/', (req, res) => res.render('home'));
 
@@ -63,13 +168,16 @@ app.get('/newprocedure', (req, res) => {
 app.get('/viewprocedure', (req, res) => {
     res.render('viewprocedure');
 });
-app.get('/openprocedure/:procedureid', (req, res) => {
-    var theId = MongoDb.ObjectId(req.params.procedureid);
-    proceduresdb.collection('procedures').find({_id: theId}).toArray (function(err,docs) {
+app.get('/openprocedure/:procedureID', (req, res) => {
+    //var theId = MongoDb.ObjectId(req.params.procedureid);
+    var openProcedureQuery = {
+        procedureID: req.params.procedureID
+    }
+    console.log(openProcedureQuery)
+    proceduresdb.collection('procedures').find(openProcedureQuery).toArray (function(err,docs) {
         console.log(docs);
         res.render('openprocedure',{
-            data: docs[0],
-            reportID: req.params.procedureid
+            data: docs[0]
         });
     });
 });
@@ -81,20 +189,6 @@ app.get('/gallery', (req, res) => {
 });
 app.get('/canvas', (req, res) => {
     res.render('canvas');
-});
-
-app.get('/newpatient', (req, res) => {
-    res.render('newpatient');
-});
-app.get('/viewpatients', (req, res) => {
-    res.render('viewpatients');
-});
-
-app.get('/newproceduralist', (req, res) => {
-    res.render('newproceduralist');
-});
-app.get('/viewproceduralists', (req, res) => {
-    res.render('viewproceduralists');
 });
 
 //API SERVER START //////////////////////////////
@@ -109,83 +203,38 @@ app.post('/submitnewprocedure', (req, res) => {
     });
     res.render('newprocedure');
 });
+
+app.post('/updateprocedure', (req,res) =>{
+    console.log(req.body);
+    var updateProcedureQuery = {
+        procedureID: req.body.procedureID
+    }
+    proceduresdb.collection('procedures').deleteOne(updateProcedureQuery).then (function(result) {
+        console.log(result);
+        proceduresdb.collection('procedures').insertOne(req.body, function(err,result) {
+            console.log('record updated :' + req.body.procedureID);
+            res.end();
+        });
+    });
+})
+
 app.get('/getprocedures', (req, res) => {
     proceduresdb.collection('procedures').find({}).toArray (function(err,docs) {
         res.send(docs);
     });
 });
 app.post('/deleteprocedure', (req, res) => {
-    var theId = MongoDb.ObjectId(req.body._id);
-    proceduresdb.collection('procedures').deleteOne({_id: theId}).then (function(err,docs) {
+    proceduresdb.collection('procedures').deleteOne(req.body).then (function(err,docs) {
         var response = {
-            msg: "Delete request for report ID " + req.body._id + " recieved"
+            msg: "Delete request for report ID " + req.body.procedureID + " recieved"
         }
         res.send(response);
     });
 });
 
-
-app.get('/listimages', (req, res) => {
-    fs.readdir(directoryPath, function (err, files) {
-        //handling error
-        if (err) {
-            res.send("read directory error: " + err);
-            return console.log('Unable to scan directory: ' + err);
-        } 
-/*         files.forEach(function (file) {
-            console.log(file); 
-        }); */
-        res.send(files);
-    });
-});
 
 app.get('/imgsrv/:imagename', (req, res) => {
     res.sendFile(__dirname + '/public/imgsrv/' + req.params.imagename);
-});
-
-app.post('/submitnewpatient', (req, res) => {
-    console.log(req.body);
-    patientsdb.collection('patients').insertOne(req.body).then (function() {
-        console.log('ok')
-    });
-    res.render('newpatient');
-});
-app.get('/getpatients', (req, res) => {
-    patientsdb.collection('patients').find({}).toArray (function(err,docs) {
-        res.send(docs);
-    });
-});
-app.post('/deletepatient', (req, res) => {
-    var theId = MongoDb.ObjectId(req.body._id);
-    patientsdb.collection('patients').deleteOne({_id: theId}).then (function(err,docs) {
-        var response = {
-            msg: "Delete request for report ID " + req.body._id + " recieved"
-        }
-        res.send(response);
-    });
-});
-
-
-app.post('/submitnewproceduralist', (req, res) => {
-    console.log(req.body);
-    proceduralistsdb.collection('proceduralists').insertOne(req.body).then (function() {
-        console.log('ok')
-    });
-    res.render('newproceduralist');
-});
-app.get('/getproceduralists', (req, res) => {
-    proceduralistsdb.collection('proceduralists').find({}).toArray (function(err,docs) {
-        res.send(docs);
-    });
-});
-app.post('/deleteproceduralist', (req, res) => {
-    var theId = MongoDb.ObjectId(req.body._id);
-    proceduralistsdb.collection('proceduralists').deleteOne({_id: theId}).then (function(err,docs) {
-        var response = {
-            msg: "Delete request for report ID " + req.body._id + " recieved"
-        }
-        res.send(response);
-    });
 });
 
 

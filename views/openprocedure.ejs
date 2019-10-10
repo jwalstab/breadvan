@@ -83,14 +83,14 @@
         <br>
         <div style="text-align: center"><h2>Colonoscopy Report</h1></div>
         <br>
-        <form action="submitnewprocedure" method="POST">
+        <form action="/updateprocedure" method="POST">
                 <h3>Details</h3>
                 <label class="control-label">Procedure Date</label>
-                <input type="text" id="pdate" style="width: 160px;" name="pdate" placeholder="<%= data.pdate %>">
+                <input type="text" id="pdate" style="width: 160px;" name="procedureDate" placeholder="<%= data.procedureDate %>">
                 <label class="control-label">Patient ID</label>
-                <input type="text" id="pid" style="width: 160px;" name="pdate" placeholder="<%= data.pid %>">
+                <input type="text" id="pid" style="width: 160px;" name="patientID" placeholder="<%= data.patientID %>">
                 <label class="control-label">Proceduralist</label>
-                <input type="text" id="pdate" style="width: 160px;" name="pdate" placeholder="<%= data.proceduralist %>">
+                <input type="text" id="pdate" style="width: 160px;" name="proceduralist" value="<%= data.proceduralist %>">
                 <br><br>
                 <label class="control-label">Reason for procedure</label>
                 <input type="text" name="reason" placeholder="<%= data.reason %>" style="width: 500px; float: right;">
@@ -116,8 +116,15 @@
                         </label>
                     </label>
                     <br><br><br>
-                    <img src ="/imgsrv/<%= reportID %>.png" id="diagramcanvas" width="360" height="360" style="margin: 0px 0px 0px 140px"></canvas>
-                    <input type="hidden" name="imgdata" id="imgdatainput" value="">
+                    <div id = "img-container">
+                        <canvas id="diagram-canvas"></canvas>
+                        <img src ="/imgsrv/<%= data.procedureID %>/IMG0.JPG" id="img1" width="245" height="245">
+                        <img src ="/imgsrv/<%= data.procedureID %>/IMG1.JPG" id="img2" width="245" height="245">
+                        <img src ="/imgsrv/<%= data.procedureID %>/IMG2.JPG" id="img3" width="245" height="245">
+                        <img src ="/imgsrv/<%= data.procedureID %>/IMG3.JPG" id="img4" width="245" height="245">
+                        <img src ="/imgsrv/<%= data.procedureID %>/IMG4.JPG" id="img5" width="245" height="245">
+                        <img src ="/imgsrv/<%= data.procedureID %>/IMG5.JPG" id="img6" width="245" height="245">
+                    </div>
                     <br><br><br>
                     <label class="control-label">Follow up with doctor required:</label>
                     <label class="checkbox-inline">
@@ -130,13 +137,91 @@
                         <br>
                         <label class="control-label">If yes, details:</label>
                         <input type="text" style="width: 460px;" name="followupdetails" placeholder="<%= data.followupdetails %>" >
-                        <br><br><br>
+                        <br>
                         <label class="control-label">Recommended timeframe for follow up colonoscopy:</label>
                         <input type="text" onclick="StartDate()" id="fdate" style="width: 160px;" name="fdate" placeholder="<%= data.fdate %>"><br>
                         <p>Or</p>
                         <input type="checkbox" id="inlineCheckbox2" value="followupdiscuss" name="followupdiscuss" <%= data.followupdiscuss == "yes" ? "checked" : "" %> > To be discussed at your follow up appointment
-                        <br><br><br><br><br>
+                        <br><br>
                         <p>Doctor signature:  ______________________________________</p>
-                        <br><br><br>
+                        <br><br>
+                        <input type="hidden" name="imgdata" id="imgdatainput" value="">
+                        <input type="hidden" name="procedureID" id="procedureID" value="<%= data.procedureID %>">
+                        <button type="submit" style="float: right;" class="btn btn-theme">Submit</button>
         </form>
 </div>
+
+
+<script>
+var imgToCheck = document.getElementById('img1');
+console.log(imgToCheck);
+if (imgToCheck.naturalWidth === 0) {
+    console.log("dead pic");
+}
+else{
+  console.log("pic ok")
+}
+</script>
+
+<script>
+
+    var canvas = document.getElementById("diagram-canvas");
+    var context = canvas.getContext("2d");
+    var clicking = false;
+
+    //var img = new Image();
+    //img.src="/img/diagram.png";
+    //img.onload=function(){
+    //    context.drawImage(img, 0, 0,canvas.width,canvas.height);
+    //}
+    window.addEventListener('mousemove', draw, false);
+    window.addEventListener('mousedown', Clicking, false);
+    window.addEventListener('mouseup', NotClicking, false);
+
+    /*function imgdata(){
+        var imgObj ={
+            data: canvas.toDataURL()
+        } 
+
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(imgObj),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        fetch(APIURL + '/sendimagedata', options)
+        .then(res => res.json())
+        .then(res => console.log(res.msg));
+    }*/
+    function Clicking(e){
+        clicking = true;
+    }
+    function NotClicking(e){
+        var bla = 0;
+        while(bla < 25000){
+            bla++;
+            if (bla == 24999){
+                clicking = false;
+                document.getElementById("imgdatainput").value = canvas.toDataURL();
+                console.log(document.getElementById("imgdatainput").value);
+            }
+        }
+    }
+    function draw(e) {
+        if (clicking){
+            var pos = getMousePos(canvas, e);
+            posx = pos.x;
+            posy = pos.y;
+            context.fillStyle = "#000000";
+            context.fillRect(posx, posy, 1, 1);
+        }
+    }
+    function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+            x: (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
+            y: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
+        };
+    }
+</script>

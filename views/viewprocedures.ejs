@@ -13,7 +13,7 @@
                       <li><a href="javascript:void(0)" onclick="SetSearchFilter(0, 'date')">Date</a></li>
                       <li><a href="javascript:void(0)" onclick="SetSearchFilter(1, 'patient ID')">Patient ID</a></li>
                       <li><a href="javascript:void(0)" onclick="SetSearchFilter(2, 'proceduralist')">Proceduralist</a></li>
-                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(3, 'reason')">Reason</a></li>
+                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(3, 'clinic')">Clinic</a></li>
                     </ul>
                   </div>
             </div>
@@ -24,7 +24,7 @@
             <th> <a href="javascript:void(0)" onclick="SortDateTable(0)">Date</a></th>
             <th> <a href="javascript:void(0)" onclick="SortNumberTable(1)">Patient ID</a></th>
             <th> <a href="javascript:void(0)" onclick="SortCharacterTable(2)">Proceduralist</a></th>
-            <th> <a href="javascript:void(0)" onclick="SortCharacterTable(3)">Reason</a></th>
+            <th> <a href="javascript:void(0)" onclick="SortCharacterTable(3)">Clinic</a></th>
             <th> Options</a></th>
           </tr>
         </thead>
@@ -33,20 +33,22 @@
 
 <script>
 
-var cols = ['pdate','pid','proceduralist','reason']
+var cols = ['procedureDate','patientID','proceduralist','clinic']
 
 fetch(APIURL + '/getprocedures')
 .then((resp) => resp.json())
 .then(function(data) {
+    console.log(data);
     if (data.length > 0){
         var tableRef = document.getElementById('tablediv').getElementsByTagName('tbody')[0];
         for (var i = 0; i < data.length; i++){ //goes through the data one by one
+            var procedureIDString = "'" + data[i].procedureID + "'"
             var newRow = tableRef.insertRow(); //inserts a new row for the table
             var lastCellCount;
-            var reportIDString = "'" + data[i]._id + "'"
             for (var j = 0; j < cols.length; j++){ //jumps into a loop to go through each colum
                 var thisdata = data[i]; // seperates the data instance from api
                 var thisvalue = cols[j]; // gets the value from the cols array to check againt
+                console.log(thisvalue + " this value");
                 var newCell  = newRow.insertCell(j); //check length of cols array then runs through it
                 var newText = document.createTextNode(thisdata[thisvalue]); // adds a cell with the data and value matched for it
                 newCell.appendChild(newText); // appends new cell to the table
@@ -54,8 +56,9 @@ fetch(APIURL + '/getprocedures')
             }
             var optionCell = newRow.insertCell();
             var optionCellTest = document.createElement('div');
-            viewBtnHTML = '<button class="btn btn-theme" a href="javascript:void(0)" onclick="OpenProcedure('+ reportIDString +')">View</a></button>';
-            deleteBtnHTML = '<button class="btn btn-theme" a href="javascript:void(0)" onclick="DeleteProcedure('+ reportIDString +', this)">Delete</a></button>';
+            viewBtnHTML = '<button class="btn btn-theme" a href="javascript:void(0)" onclick="OpenProcedure('+ procedureIDString +')">View</a></button>';
+            console.log(viewBtnHTML);
+            deleteBtnHTML = '<button class="btn btn-theme" a href="javascript:void(0)" onclick="DeleteProcedure('+ procedureIDString +', this)">Delete</a></button>';
             optionCellTest.innerHTML = (viewBtnHTML + deleteBtnHTML);
             optionCell.appendChild(optionCellTest);
         }
@@ -66,9 +69,9 @@ fetch(APIURL + '/getprocedures')
 </script>
 
 <script>
-    function DeleteProcedure(reportID, btn){
+    function DeleteProcedure(procedureID, btn){
         const reportObj = {
-            _id: reportID
+            procedureID: procedureID
         };
         var cell = btn.parentNode;
         var row = cell.parentNode;
@@ -90,9 +93,9 @@ fetch(APIURL + '/getprocedures')
             .then(res => console.log(res.msg));
     }
     
-    function OpenProcedure(reportID){
-        console.log("viewing " + reportID);
-        window.location = APIURL + "/openprocedure/" + reportID
+    function OpenProcedure(procedureID){
+        console.log("viewing " + procedureID);
+        window.location = APIURL + "/openprocedure/" + procedureID;
     }
 </script>
 
@@ -206,8 +209,8 @@ fetch(APIURL + '/getprocedures')
             y = rows[i + 1].getElementsByTagName("TD")[n];
             /* Check if the two rows should switch place,
             based on the direction, asc or desc: */
-            var xSeconds = moment(x.innerHTML, "DD-MM-YYYY HH:mm").unix();
-            var ySeconds = moment(y.innerHTML, "DD-MM-YYYY HH:mm").unix();  
+            var xSeconds = moment(x.innerHTML, "YYYY/MM/DD HH:mm").unix();
+            var ySeconds = moment(y.innerHTML, "YYYY/MM/DD HH:mm").unix();  
             if (dir == "asc") {
                 if (Number(xSeconds) > Number(ySeconds)) {
                     shouldSwitch = true;
@@ -300,4 +303,5 @@ fetch(APIURL + '/getprocedures')
     //var checkDate = moment("27/09/2019 03:54 PM", "DD-MM-YYYY");
     var seconds = moment("27/09/2019 03:54 PM", "DD-MM-YYYY").unix()
 }
+
 </script>

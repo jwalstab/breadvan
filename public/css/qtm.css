@@ -112,3 +112,22 @@
 .splash-button:hover {
   background-color: #555;
 }
+
+#img-container{
+  display:inline-block;
+  width:745px; 
+  height:490px;
+  margin: 0 auto; 
+  background: lightgray; 
+  position:relative; 
+  border:0px solid lightgray; 
+  border-radius: 0px; 
+}
+  /*box-shadow: 0 5px 50px #333}*/
+
+#diagram-canvas{
+  position: absolute;
+  width: 745px;
+  height: 490px;
+  z-index:20;
+}
