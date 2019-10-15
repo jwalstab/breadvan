@@ -194,7 +194,7 @@ function CreateProcedure(inf,procedureID,patientID, pid_DIR){
                         const img = files[index];
                         var strJPGCheck = files[index].substr(files[index].length - 3);
                         var strPhantomCheck = files[index].charAt(0);
-                        if (strJPGCheck == "JPG" && strPhantomCheck != "_"){
+                        if (strJPGCheck === "JPG" && strPhantomCheck === "D"){
                             console.log("is a jpg, the file is " + files[index]);
                             fs.copyFile(pid_DIR + '/' + img, imgWithID_DIR + '/' + 'IMG' + imageCount + '.JPG', (err) => {
                                 if (err) {console.log(err)};
