@@ -112,16 +112,15 @@
 
 setTimeout(function(){LoadPictures();}, 2000);
 function LoadPictures(){
-    for (let index = 0; index < 6; index++) {
-        var imgToCheck = document.getElementById('img' + index);
-        if (imgToCheck.naturalWidth === 0) {
-          imgToCheck.src = "/img/245blank.jpg"
+        for (let index = 0; index < 6; index++) {
+            var imgToCheck = document.getElementById('img' + index);
+            if (imgToCheck.naturalWidth === 0) {
+            imgToCheck.src = "/img/245blank.jpg"
+            }
+            else{
+            console.log("pic ok")
         }
-        else{
-        console.log("pic ok")
-        }
-}
-
+    }
 }
 
 

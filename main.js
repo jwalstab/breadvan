@@ -185,9 +185,9 @@ function CreateProcedure(inf,procedureID,patientID, pid_DIR){
     proceduresdb.collection('procedures').find(createProcedureCheckDuplicateQuery).toArray (function(err,docs) {
         if (docs[0] != null){console.log("procedureID " + procedureID + " already exists, not creating new procedure")}
         else{
+            var imgWithID_DIR = imgSrvDrive + '/' + procedureID;
+            fs.mkdir(imgWithID_DIR,(err) => {if(err){console.log(err)};});
             fs.readdir(pid_DIR, function(err,files){
-                    var imgWithID_DIR = imgSrvDrive + '/' + procedureID;
-                    fs.mkdir(imgWithID_DIR,(err) => {if(err){console.log(err)};});
                     for (let index = 0; index < files.length; index++) {
                         const img = files[index];
                         fs.copyFile(pid_DIR + '/' + img, imgWithID_DIR + '/' + 'IMG' + index + '.JPG', (err) => {
