@@ -5,14 +5,14 @@
 <head>
     <script>
             //var masterURL = "http://165.22.241.11:3000" //CLOUD
-            var masterURL = "http://127.0.0.1:3000" //LOCAL
+            var masterURL = "<=% localAddress %>" //LOCAL
     </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
   <meta name="author" content="Dashboard">
   <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
-  <title>Quantum Data Technologies - IoT Portal</title>
+  <title>Quantum Data Technologies</title>
 
   <!-- Favicons -->
   <link href="/img/favicon.png" rel="icon">
@@ -38,9 +38,11 @@
 
 
 <body>
+  <input type="hidden" name="localAddress" id="localAddress" value="<%= localAddress %>">
 <script>
 //var APIURL = 'http://157.245.56.30:3000';
-var APIURL = 'http://127.0.0.1:3000';
+//var APIURL = 'http://127.0.0.1:3000';
+var APIURL = document.getElementById('localAddress').value
 </script>
 <div id="spinner">
     <div class="preloader" >
@@ -64,12 +66,12 @@ var APIURL = 'http://127.0.0.1:3000';
             </div>
             <!--logo start-->
             <!--  -->
-            <a href="" class="logo"> <img src="/img/qlogo.png"height="40" width="120"/></a>
+            <a href="/" class="logo"> <img src="/img/qlogo.png"height="40" width="120"/></a>
             <!--logo end-->
             <div class="top-menu">
               <ul class="nav pull-right top-menu">
                   <!-- <a href="index.html" class="logo"><b>Andrew Collins<span> Engineer</span></b></a> -->
-                <li><a class="logout" href="/sign_out">Logout</a></li>
+                <!-- <li><a class="logout" href="/sign_out">Logout</a></li> -->
               </ul>
             </div>
           </header>
@@ -83,48 +85,25 @@ var APIURL = 'http://127.0.0.1:3000';
       <div id="sidebar" class="nav-collapse ">
         <!-- sidebar menu start-->
         <ul class="sidebar-menu" id="nav-accordion">
-<!--           <h5 class="centered">NO USER</h5>
-          <h5 class="centered">Access Level: NO LEVEL</h5> -->
+          <h5 class="centered">USER: <%= loggedInName %></h5>
+          <h5 class="centered">ACCESS LEVEL: <%= loggedInTag %></h5>
           <li class="sub-menu">
-                <a href="javascript:;">
-                  <i class=" fa fa-stethoscope"></i>
-                  <span>Procedures</span>
-                  </a>
-                <ul class="sub">
-                  <li><a href="/newprocedure">New Procedure</a></li>
-                  <li><a href="/viewprocedures">View Procedures</a></li>
-                </ul>
+          <li>
+                <a href="/viewprocedures">
+                <i class="fa fa-user-md"></i>
+                <span>Procedures</span>
+                </a>
           </li>
-          <li class="sub-menu">
-                <a href="javascript:;">
-                  <i class=" fa fa-id-card"></i>
-                  <span>Patients</span>
-                  </a>
-                <ul class="sub">
-                  <li><a href="/newpatient">New Patient</a></li>
-                  <li><a href="/viewpatients">View Patients</a></li>
-                </ul>
+          <li>
+              <a href="/setup">
+              <i class="fa fa-cogs"></i>
+              <span>Setup</span>
+              </a>
           </li>
-          <li class="sub-menu">
-                <a href="javascript:;">
-                  <i class=" fa fa-user-md"></i>
-                  <span>Proceduralists</span>
-                  </a>
-                <ul class="sub">
-                  <li><a href="/newproceduralist">New Proceduralist</a></li>
-                  <li><a href="/viewproceduralists">View Proceduralists</a></li>
-                </ul>
-          </li>
-<!--             <li>
-                    <a href="/images">
-                    <i class="fa fa-file-image-o"></i>
-                    <span>Images</span>
-                    </a>
-            </li> -->
           <li>
               <a href="/sign_out">
               <i class="fa fa-sign-out"></i>
-              <span>Logout</span>
+              <span>Switch User</span>
               </a>
           </li>
         </ul>
@@ -138,12 +117,6 @@ var APIURL = 'http://127.0.0.1:3000';
     <!--main content start-->
     <section id="main-content">
       <section class="wrapper site-min-height">
-<!--         <h3><i class="fa fa-angle-right"></i> Blank Page</h3>
-        <div class="row mt">
-          <div class="col-lg-12">
-            <p>Place your content here.</p>
-          </div>
-        </div> -->
         <script src="/lib/jquery/jquery.min.js"></script>
         <%- body %>
       </section>

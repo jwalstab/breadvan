@@ -1,0 +1,281 @@
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+
+<style type="text/css">
+    * {
+        box-sizing: border-box;
+      }
+      
+      body {
+        background-color: #f1f1f1;
+        padding: 20px;
+        font-family: Arial;
+      }
+      
+      /* Center website */
+      .main {
+        max-width: 1000px;
+        margin: auto;
+      }
+      
+      h1 {
+        font-size: 50px;
+        word-break: break-all;
+      }
+      
+      .row {
+        margin: 8px -16px;
+      }
+      
+      /* Add padding BETWEEN each column (if you want) */
+      .row,
+      .row > .column {
+        padding: 8px;
+      }
+      
+      /* Create four equal columns that floats next to each other */
+      .column {
+        float: left;
+        width: 33%;
+      }
+      
+      /* Clear floats after rows */
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      
+      /* Content */
+      .content {
+        background-color: white;
+        padding: 10px;
+      }
+
+      .qtmpanel {
+        background-color: lightgray;
+        min-height: 600px;
+        max-height: 600px;
+        overflow: scroll;
+      }
+      
+      /* Responsive layout - makes a two column-layout instead of four columns */
+      @media screen and (max-width: 900px) {
+        .column {
+          width: 50%;
+        }
+      }
+      
+      /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+      @media screen and (max-width: 600px) {
+        .column {
+          width: 100%;
+        }
+      }
+</style>
+
+<div class="A4" id="printableArea">
+        <img style="float: left; margin: 0px 0px 0px 0px;" src="/img/sdslogo.jpg"/>
+        <img style="float: right; margin: 0px 0px 0px 0px;" src="/img/idsmall.png"/>
+        <br>
+        <div style="text-align: center"><h2>Colonoscopy Report</h1></div>
+        <br>
+        <form action="/updateprocedure" method="POST">
+                <label class="control-label">Procedure Date</label>
+                <input type="text" id="procedureDate" style="width: 140px;" name="procedureDate" value="<%= data.procedureDate %>">
+                <label class="control-label">Clinic</label>
+                <input type="text" id="clinic" style="width: 220px;" name="clinic" value="<%= data.clinic %>">
+                <label class="control-label">Proceduralist</label>
+                <input type="text" id="proceduralist" style="width: 140px;" name="proceduralist" value="<%= data.proceduralist %>">
+                <br>
+                <label class="control-label">Patient ID</label>
+                <input type="text" id="patientID" style="width: 90px;" name="patientID" value="<%= data.patientID %>">
+                <label class="control-label">Patient ID</label>
+                <input type="text" id="patientName" style="width: 165px;" name="patientName" value="<%= data.patientName %>">
+                <label class="control-label">DOB</label>
+                <input type="text" id="patientDOB" style="width: 120px;" name="patientDOB" value="<%= data.patientDOB %>">
+                <label class="control-label">Age</label>
+                <input type="text" id="patientAge" style="width: 60px;" name="patientAge" value="<%= data.patientAge %>">
+                <label class="control-label">Sex</label>
+                <input type="text" id="patientSex" style="width: 60px;" name="patientSex" value="<%= data.patientSex %>">
+                <br><br>
+                <label class="control-label">Reason for procedure</label>
+                <input type="text" name="reason" value="<%= data.reason %>" style="width: 500px; float: right;">
+                <br>
+                <br>
+                <label class="control-label" rows="5" height =>Findings</label>
+                <input type="text" name="findings" value="<%= data.findings %>" cols="40" rows="5" style="width: 500px; float: right;"></textarea>
+                <br><br>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="inlineCheckbox1" name="bowelPreparation" value="Yes"  <%= data.bowelPreparation == "Yes" ? "checked" : "" %>> Bowel Preparation
+                  </label>
+                <label class="checkbox-inline">
+                <input type="checkbox" id="inlineCheckbox1" name="polyps" value="Yes"  <%= data.polyps == "Yes" ? "checked" : "" %>> Polyps
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="inlineCheckbox2" name="completeColon" value="Yes"<%= data.completeColon ? "checked" : "" %>> Complete Colonoscopy
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="inlineCheckbox3" name="haemorrhoids" value="Yes"<%= data.haemorrhoids ? "checked" : "" %>> Haemorrhoids
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="inlineCheckbox3" name="diverticularDisease" value="Yes"<%= data.diverticularDisease ? "checked" : "" %>> Diverticular Disease
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="inlineCheckbox3" value="Yescd 
+                    "<%= data.colitis ? "checked" : "" %>> Colitis
+                </label>
+                <br><br><br>
+                <div id = "img-container">
+                    <canvas id="diagram-canvas"></canvas>
+                    <img src ="/imgsrv/<%= data.procedureID %>/IMG0.JPG" id="img0" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/IMG1.JPG" id="img1" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/IMG2.JPG" id="img2" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/IMG3.JPG" id="img3" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/IMG4.JPG" id="img4" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/IMG5.JPG" id="img5" width="245" height="245">
+                </div>
+                <br><br><br>
+                <label class="control-label">Follow up with doctor required:</label>
+                <label class="checkbox-inline">
+                    <input type="radio" id="followupradio1" name="followupradio" <%= data.followupradio == "yes" ? "checked" : "" %> value="yes"> Yes
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="radio" id="followupradio2" name="followupradio" <%= data.followupradio == "no" ? "checked" : "" %> value="no"> No
+                    </label>
+                </label>
+                <br>
+                <label class="control-label">If yes, details:</label>
+                <input type="text" style="width: 460px;" name="followupdetails" value="<%= data.followupdetails %>" >
+                <br>
+                <label class="control-label">Recommended timeframe for follow up colonoscopy:</label>
+                <input type="text" onclick="StartDate()" id="fdate" style="width: 160px;" name="followUpDate" value="<%= data.followUpDate %>"><br>
+                <p>Or</p>
+                <input type="checkbox" id="inlineCheckbox2" value="Yes" name="followUpDiscuss" <%= data.followUpDiscuss == "Yes" ? "checked" : "" %> > To be discussed at your follow up appointment
+                <br><br>
+                <p>Doctor signature:  ______________________________________</p>
+                <br>
+                <input type="hidden" name="imgdata" id="imgdatainput" value="">
+                <input type="hidden" name="procedureID" id="procedureID" value="<%= data.procedureID %>">
+                <button type="submit" id="submitButton" style="float: right;" class="btn btn-theme">Submit</button>
+                <!-- <input type="button" onclick="printDiv('printableArea')" value="print a div!" /> -->
+        </form>
+</div>
+
+
+<script>
+
+
+for (let index = 0; index < 6; index++) {
+  var imgToCheck = document.getElementById('img' + index);
+  if (imgToCheck.naturalWidth === 0) {
+    imgToCheck.src = "/img/245blank.jpg"
+  }
+  else{
+  console.log("pic ok")
+  }
+}
+
+
+
+</script>
+
+<script>
+
+    var canvas = document.getElementById("diagram-canvas");
+    var context = canvas.getContext("2d");
+    var clicking = false;
+
+    var img = new Image();
+    img.src="/imgsrv/<%= data.procedureID %>/diagram.png";
+    img.onload=function(){
+        context.drawImage(img, 0, 0,canvas.width,canvas.height);
+    }
+    window.addEventListener('mousemove', draw, false);
+    window.addEventListener('mousedown', Clicking, false);
+    window.addEventListener('mouseup', NotClicking, false);
+
+    /*function imgdata(){
+        var imgObj ={
+            data: canvas.toDataURL()
+        } 
+
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(imgObj),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        fetch(APIURL + '/sendimagedata', options)
+        .then(res => res.json())
+        .then(res => console.log(res.msg));
+    }*/
+    function Clicking(e){
+        clicking = true;
+    }
+    function NotClicking(e){
+        var bla = 0;
+        while(bla < 25000){
+            bla++;
+            if (bla == 24999){
+                clicking = false;
+                document.getElementById("imgdatainput").value = canvas.toDataURL();
+                console.log(document.getElementById("imgdatainput").value);
+            }
+        }
+    }
+    function draw(e) {
+        if (clicking){
+            var pos = getMousePos(canvas, e);
+            posx = pos.x;
+            posy = pos.y;
+            context.fillStyle = "#000000";
+            context.fillRect(posx, posy, 1, 1);
+        }
+    }
+    function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+            x: (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
+            y: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
+        };
+    }
+</script>
+
+
+<script>
+    var curTime = new Date();
+    console.log(document.getElementById('procedureDate'));
+    $('#procedureDate').daterangepicker({
+        "singleDatePicker": true,
+        "timePicker": true,
+        "timePicker24Hour": true,
+        "startDate": document.getElementById('procedureDate').value,
+        "endDate": curTime,
+        locale: {
+            format: 'YYYY/MM/DD hh:mm'
+            }
+    }, function(start, end, label) {
+        console.log('New date range selected: ' + start.format('YYYY-MM-DD-HH-MM') + ' to ' + end.format('YYYY-MM-DD-HH-MM') + ' (predefined range: ' + label + ')');
+    });
+</script>
+
+
+<script>
+    function printDiv(divName) {
+      document.getElementById('submitButton').style.visibility = 'hidden';
+      var printContents = document.getElementById(divName).innerHTML;
+      var originalContents = document.body.innerHTML;
+ 
+      document.body.innerHTML = printContents;
+ 
+      window.print();
+ 
+      document.body.innerHTML = originalContents;
+      document.getElementById('submitButton').style.visibility = 'visible';
+ }
+</script>

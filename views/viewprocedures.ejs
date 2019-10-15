@@ -1,4 +1,4 @@
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="/js/moment.min.js"></script>
 
 
 <h3><i class="fa fa-angle-right"></i> Procedures</h3>
@@ -12,8 +12,9 @@
                     <ul class="dropdown-menu">
                       <li><a href="javascript:void(0)" onclick="SetSearchFilter(0, 'date')">Date</a></li>
                       <li><a href="javascript:void(0)" onclick="SetSearchFilter(1, 'patient ID')">Patient ID</a></li>
-                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(2, 'proceduralist')">Proceduralist</a></li>
-                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(3, 'clinic')">Clinic</a></li>
+                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(2, 'patient name')">Patient Name</a></li>
+                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(3, 'proceduralist')">Proceduralist</a></li>
+                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(4, 'clinic')">Clinic</a></li>
                     </ul>
                   </div>
             </div>
@@ -23,8 +24,9 @@
           <tr>
             <th> <a href="javascript:void(0)" onclick="SortDateTable(0)">Date</a></th>
             <th> <a href="javascript:void(0)" onclick="SortNumberTable(1)">Patient ID</a></th>
-            <th> <a href="javascript:void(0)" onclick="SortCharacterTable(2)">Proceduralist</a></th>
-            <th> <a href="javascript:void(0)" onclick="SortCharacterTable(3)">Clinic</a></th>
+            <th> <a href="javascript:void(0)" onclick="SortCharacterTable(2)">Patient Name</a></th>
+            <th> <a href="javascript:void(0)" onclick="SortCharacterTable(3)">Proceduralist</a></th>
+            <th> <a href="javascript:void(0)" onclick="SortCharacterTable(4)">Clinic</a></th>
             <th> Options</a></th>
           </tr>
         </thead>
@@ -33,38 +35,59 @@
 
 <script>
 
-var cols = ['procedureDate','patientID','proceduralist','clinic']
-
-fetch(APIURL + '/getprocedures')
-.then((resp) => resp.json())
-.then(function(data) {
-    console.log(data);
-    if (data.length > 0){
-        var tableRef = document.getElementById('tablediv').getElementsByTagName('tbody')[0];
-        for (var i = 0; i < data.length; i++){ //goes through the data one by one
-            var procedureIDString = "'" + data[i].procedureID + "'"
-            var newRow = tableRef.insertRow(); //inserts a new row for the table
-            var lastCellCount;
-            for (var j = 0; j < cols.length; j++){ //jumps into a loop to go through each colum
-                var thisdata = data[i]; // seperates the data instance from api
-                var thisvalue = cols[j]; // gets the value from the cols array to check againt
-                console.log(thisvalue + " this value");
-                var newCell  = newRow.insertCell(j); //check length of cols array then runs through it
-                var newText = document.createTextNode(thisdata[thisvalue]); // adds a cell with the data and value matched for it
-                newCell.appendChild(newText); // appends new cell to the table
-                lastCellCount = j;
+var cols = ['procedureDate','patientID','patientName','proceduralist','clinic']
+var addedProcedures = ["DummyRecord"];
+var firstLoad = true;
+LoadTable();
+function LoadTable(){
+  console.log(addedProcedures);
+  fetch(APIURL + '/getprocedures')
+  .then((resp) => resp.json())
+  .then(function(data) {
+      if (data.length >= 0){
+          var tableRef = document.getElementById('tablediv').getElementsByTagName('tbody')[0];
+          for (var i = 0; i < data.length; i++){ //goes through the data one by one
+            var procedureAlreadyExists = (addedProcedures.indexOf(data[i].procedureID) > -1);
+            if (procedureAlreadyExists == false){
+              addedProcedures.push(data[i].procedureID);
+              var procedureIDString = "'" + data[i].procedureID + "'"
+              var newRow = tableRef.insertRow(); //inserts a new row for the table
+  
+              if (data[i].new == false){newRow.style.backgroundColor = "mistyrose";} //colour change based on new or old
+              else{newRow.style.backgroundColor = "aquamarine";} //colour change based on new or old
+              
+              var lastCellCount;
+              for (var j = 0; j < cols.length; j++){ //jumps into a loop to go through each colum
+                  var thisdata = data[i]; // seperates the data instance from api
+                  var thisvalue = cols[j]; // gets the value from the cols array to check againt
+                  var newCell  = newRow.insertCell(j); //check length of cols array then runs through it
+                  var newText = document.createTextNode(thisdata[thisvalue]); // adds a cell with the data and value matched for it
+                  newCell.appendChild(newText); // appends new cell to the table
+                  lastCellCount = j;
+              }
+              var optionCell = newRow.insertCell();
+              var optionCellTest = document.createElement('div');
+              var BtnHTML;
+              if (data[i].new == true){
+                viewBtnHTML = '<button class="btn btn-theme" a href="javascript:void(0)" onclick="OpenProcedure('+ procedureIDString +')">Create</a></button>';
+              }
+              else{
+                viewBtnHTML = '<button class="btn btn-theme" a href="javascript:void(0)" onclick="OpenProcedure('+ procedureIDString +')">Edit</a></button>';
+              }
+              printBtnHTML = '<button class="btn btn-theme" a href="javascript:void(0)" onclick="PrintProcedure('+ procedureIDString +', this)">Print</a></button>';
+              deleteBtnHTML = '<button class="btn btn-theme" a href="javascript:void(0)" onclick="DeleteProcedure('+ procedureIDString +', this)">Delete</a></button>';
+              optionCellTest.innerHTML = (viewBtnHTML + "   " + printBtnHTML + "  " + deleteBtnHTML);
+              optionCell.appendChild(optionCellTest);
             }
-            var optionCell = newRow.insertCell();
-            var optionCellTest = document.createElement('div');
-            viewBtnHTML = '<button class="btn btn-theme" a href="javascript:void(0)" onclick="OpenProcedure('+ procedureIDString +')">View</a></button>';
-            console.log(viewBtnHTML);
-            deleteBtnHTML = '<button class="btn btn-theme" a href="javascript:void(0)" onclick="DeleteProcedure('+ procedureIDString +', this)">Delete</a></button>';
-            optionCellTest.innerHTML = (viewBtnHTML + deleteBtnHTML);
-            optionCell.appendChild(optionCellTest);
-        }
-        SortDateTable(0);
-    }
-});
+          }
+          if (firstLoad == true){
+            SortDateTable(0);
+            firstLoad = false;
+          }
+          setTimeout(function(){LoadTable();}, 5000);
+      }
+  });
+}
 
 </script>
 
@@ -95,8 +118,13 @@ fetch(APIURL + '/getprocedures')
     
     function OpenProcedure(procedureID){
         console.log("viewing " + procedureID);
-        window.location = APIURL + "/openprocedure/" + procedureID;
+        window.location = APIURL + "/editprocedure/" + procedureID;
     }
+
+    function PrintProcedure(procedureID){
+      console.log("viewing " + procedureID);
+      window.location = APIURL + "/printprocedure/" + procedureID;
+  }
 </script>
 
 <script>

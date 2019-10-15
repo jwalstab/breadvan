@@ -131,3 +131,23 @@
   height: 490px;
   z-index:20;
 }
+#diagram-image{
+  position: absolute;
+  width: 745px;
+  height: 490px;
+  z-index:20;
+}
+/* 
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #MainA4Sheet, #MainA4Sheet * {
+    visibility: visible;
+  }
+  #section-to-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+} */
