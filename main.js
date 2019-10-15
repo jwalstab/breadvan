@@ -97,7 +97,7 @@ MongoClient.connect(mongoServer, {useNewUrlParser: true, useUnifiedTopology: tru
 
     usersdb.collection('users').insertOne(newUser, function(err,result) {
         if(err){console.log(err)};
-        console.log("OK!");
+        console.log("Creating Sussex user account if none...");
     });
 });
 
