@@ -144,7 +144,7 @@ function ScanForExtDrives(){
             });
         }
     });
-    setTimeout(function(){ScanForExtDrives();}, 1000);
+    setTimeout(function(){ScanForExtDrives();}, 10000);
 }
 function ScanAction(dateFolder, dateText){
     console.log('Starting scan');
@@ -186,14 +186,23 @@ function CreateProcedure(inf,procedureID,patientID, pid_DIR){
         if (docs[0] != null){console.log("procedureID " + procedureID + " already exists, not creating new procedure")}
         else{
             var imgWithID_DIR = imgSrvDrive + '/' + procedureID;
+            var imageCount = 0;
             fs.mkdir(imgWithID_DIR,(err) => {if(err){console.log(err)};});
             fs.readdir(pid_DIR, function(err,files){
                     for (let index = 0; index < files.length; index++) {
                         const img = files[index];
-                        fs.copyFile(pid_DIR + '/' + img, imgWithID_DIR + '/' + 'IMG' + index + '.JPG', (err) => {
-                            if (err) {console.log(err)};
-                        });
-                        imgList.push('IMG' + index + '.JPG');
+                        var strJPGCheck = files[index].substr(files[index].length - 3);
+                        if (strJPGCheck == "JPG"){
+                            console.log("MUST BE A JPG, will copy");
+                            fs.copyFile(pid_DIR + '/' + img, imgWithID_DIR + '/' + 'IMG' + imageCount + '.JPG', (err) => {
+                                if (err) {console.log(err)};
+                            });
+                            imgList.push('IMG' + imageCount + '.JPG');
+                            imageCount++;
+                        }
+                        else{
+                            console.log("not a jpg, it is a :" + strJPGCheck);
+                        }
                     }
                 var procedureObject = {
                     procedureID: procedureID,
