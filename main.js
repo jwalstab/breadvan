@@ -189,11 +189,12 @@ function CreateProcedure(inf,procedureID,patientID, pid_DIR){
             var imageCount = 0;
             fs.mkdir(imgWithID_DIR,(err) => {if(err){console.log(err)};});
             fs.readdir(pid_DIR, function(err,files){
-                    console.log(patientID + "folder has " + files.length + " files in it");
+                    console.log(patientID + " folder has " + files.length + " files in it");
                     for (let index = 0; index < files.length; index++) {
                         const img = files[index];
                         var strJPGCheck = files[index].substr(files[index].length - 3);
-                        if (strJPGCheck == "JPG"){
+                        var strPhantomCheck = files[index].charAt(0);
+                        if (strJPGCheck == "JPG" && strPhantomCheck != "_"){
                             console.log("is a jpg, the file is " + files[index]);
                             fs.copyFile(pid_DIR + '/' + img, imgWithID_DIR + '/' + 'IMG' + imageCount + '.JPG', (err) => {
                                 if (err) {console.log(err)};
