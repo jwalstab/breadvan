@@ -177,7 +177,7 @@ function ScanAction(dateFolder, dateText){
 }
 function CreateProcedure(inf,procedureID,patientID, pid_DIR){
     var imgList = [];
-
+    console.log("creating procedure for " + patientID);
     var createProcedureCheckDuplicateQuery = {
         procedureID: procedureID
     }
@@ -189,11 +189,12 @@ function CreateProcedure(inf,procedureID,patientID, pid_DIR){
             var imageCount = 0;
             fs.mkdir(imgWithID_DIR,(err) => {if(err){console.log(err)};});
             fs.readdir(pid_DIR, function(err,files){
+                    console.log(patientID + "folder has " + files.length + " files in it");
                     for (let index = 0; index < files.length; index++) {
                         const img = files[index];
                         var strJPGCheck = files[index].substr(files[index].length - 3);
                         if (strJPGCheck == "JPG"){
-                            console.log("MUST BE A JPG, will copy");
+                            console.log("is a jpg, the file is " + files[index]);
                             fs.copyFile(pid_DIR + '/' + img, imgWithID_DIR + '/' + 'IMG' + imageCount + '.JPG', (err) => {
                                 if (err) {console.log(err)};
                             });
@@ -201,7 +202,7 @@ function CreateProcedure(inf,procedureID,patientID, pid_DIR){
                             imageCount++;
                         }
                         else{
-                            console.log("not a jpg, it is a :" + strJPGCheck);
+                            console.log("not a jpg, the file is " + files[index]);
                         }
                     }
                 var procedureObject = {
