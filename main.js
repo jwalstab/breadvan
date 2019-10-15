@@ -9,13 +9,13 @@ var MongoDb = require('mongodb');
 var os = require('os');
 var ifaces = os.networkInterfaces();
 console.log(ifaces);
-var localAddress = "http://" + ifaces.wlan0[0].address + ":3000"
-//var localAddress = "http://" + ifaces.WLAN[0].address + ":3000"
+//var localAddress = "http://" + ifaces.wlan0[0].address + ":3000"
+var localAddress = "http://" + ifaces.WLAN[0].address + ":3000"
 //var localAddress = 'http://192.168.0.135:3000'
 console.log(localAddress);
 
-//var mongoServer = "mongodb://157.245.56.30:27017"
-var mongoServer = "mongodb://127.0.0.1:27017"
+var mongoServer = "mongodb://157.245.56.30:27017"
+//var mongoServer = "mongodb://127.0.0.1:27017"
 
 //SESSIONS//////
 var session = require('express-session')
@@ -414,7 +414,9 @@ app.post('/setupnew/:collection', (req, res) => {
         console.log('ok')
     });
     res.render('setup',{
-        localAddress:localAddress
+        localAddress:localAddress,
+        loggedInName:req.session.name,
+        loggedInTag:req.session.tag,
     });
 });
 
@@ -431,7 +433,9 @@ app.post('/setupdelete/:collection', (req, res) => {
             msg: "Delete request for report ID " + req.body._id + " recieved"
         } */
         res.render('setup',{
-            localAddress:localAddress
+            localAddress:localAddress,
+            loggedInName:req.session.name,
+            loggedInTag:req.session.tag,
         });
     });
 });
