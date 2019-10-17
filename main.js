@@ -10,16 +10,16 @@ var os = require('os');
 var ifaces = os.networkInterfaces();
 //console.log(ifaces);
 
-//var localAddress = "http://" + ifaces.wlan0[0].address + ":3000"
-var localAddress = "http://" + ifaces.WLAN[0].address + ":3000"
+var localAddress = "http://" + ifaces.wlan0[0].address + ":3000"
+//var localAddress = "http://" + ifaces.WLAN[0].address + ":3000"
 
 console.log(localAddress);
 
-var mongoServer = "mongodb://157.245.56.30:27017"
-//var mongoServer = "mongodb://127.0.0.1:27017"
+//var mongoServer = "mongodb://157.245.56.30:27017"
+var mongoServer = "mongodb://127.0.0.1:27017"
 
-var mediaDrive = path.join(__dirname, 'public/scanner');
-//var mediaDrive = '/media/medscan';
+//var mediaDrive = path.join(__dirname, 'public/scanner');
+var mediaDrive = '/media/medscan';
 var imgSrvDrive = path.join(__dirname, 'public/imgsrv');
 
 //SESSIONS//////
