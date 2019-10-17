@@ -151,3 +151,17 @@
     top: 0;
   }
 } */
+
+
+.imgselectpanel {
+  background-color: white;
+  border: #000;
+  box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+  border-width: 2cm;
+  width: 745px;
+  min-height: 490px;
+  max-height: 490px;
+  overflow: scroll;
+  position: absolute;
+  z-index:30;
+}

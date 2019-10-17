@@ -61,25 +61,32 @@
                     <input type="checkbox" id="inlineCheckbox3" name="diverticularDisease" value="Yes"<%= data.diverticularDisease ? "checked" : "" %>> Diverticular Disease
                 </label>
                 <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox3" value="Yescd 
-                    "<%= data.colitis ? "checked" : "" %>> Colitis
+                    <input type="checkbox" id="inlineCheckbox3" value="Yes"<%= data.colitis ? "checked" : "" %>> Colitis
                 </label>
-                <br><br><br>
-                <div id = "img-container">
-                    <canvas id="diagram-canvas"></canvas>
-                    <img src ="/imgsrv/<%= data.procedureID %>/IMG0.JPG" id="img0" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/IMG1.JPG" id="img1" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/IMG2.JPG" id="img2" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/IMG3.JPG" id="img3" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/IMG4.JPG" id="img4" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/IMG5.JPG" id="img5" width="245" height="245">
+                <br><br>
+                <button type="button" onclick="SetCanvasBrushSize('down')" style="width: 13.5%" class="btn btn-theme">Brush Size -</button>
+                <input type="number" onchange="SetCanvasBrushSize('input')" id="brushSizeBox" style="width: 5%;" name="brushSizeBox" value="3">
+                <button type="button" onclick="SetCanvasBrushSize('up')" style="width: 13.5%" class="btn btn-theme">Brush Size +</button>
+                <input type="color" id="html5colorpicker" onchange="SetCanvasColour(this.value)" style="width:33%;" value="black">
+                <button type="button" onclick="ClearCanvas()" style="width: 33%" class="btn btn-theme">Clear Canvas</button>
+                <br><br>
+                <button type="button" onclick="SelectImage('0')" style= "width: 33%" class="btn btn-theme">Change Image 0</button>
+                <button type="button" onclick="SelectImage('1')" style= "width: 33%" class="btn btn-theme">Change Image 1</button>
+                <button type="button" onclick="SelectImage('2')" style= "width: 33%" class="btn btn-theme">Change Image 2</button>
+                <div id= "img-container">
+                    <canvas id="diagram-canvas" ></canvas>
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[0] %>" id="img0" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[1] %>" id="img1" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[2] %>" id="img2" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[3] %>" id="img3" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[4] %>" id="img4" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[5] %>" id="img5" width="245" height="245">
                 </div>
-                <button type="button" onclick="ClearCanvas()" style="float: right; width: 100%" class="btn btn-theme">Clear Diagram</button>
-<!--                 <button type="button" onclick="ClearCanvas()" class="btn btn-theme">Clear Diagram</button>
-                <button type="button" onclick="ClearCanvas()" class="btn btn-theme">Clear Diagram</button>
-                <button type="button" onclick="ClearCanvas()" class="btn btn-theme">Clear Diagram</button>
-                <button type="button" onclick="ClearCanvas()" class="btn btn-theme">Clear Diagram</button>
-                <button type="button" onclick="ClearCanvas()" class="btn btn-theme">Clear Diagram</button> -->
+                <button type="button" onclick="SelectImage('3')" style= "width: 33%" class="btn btn-theme">Change Image 3</button>
+                <button type="button" onclick="SelectImage('4')" style= "width: 33%" class="btn btn-theme">Change Image 4</button>
+                <button type="button" onclick="SelectImage('5')" style= "width: 33%" class="btn btn-theme">Change Image 5</button>
+                <br>
+                
                 <br>
                 <label class="control-label">Follow up with doctor required:</label>
                 <label class="checkbox-inline">
@@ -97,15 +104,62 @@
                 <input type="text" onclick="StartDate()" id="fdate" style="width: 160px;" name="followUpDate" value="<%= data.followUpDate %>"><br>
                 <p>Or</p>
                 <input type="checkbox" id="inlineCheckbox2" value="Yes" name="followUpDiscuss" <%= data.followUpDiscuss == "Yes" ? "checked" : "" %> > To be discussed at your follow up appointment
-                <br><br>
-                <!-- <p>Doctor signature:  ______________________________________</p> -->
                 <br>
+                <!-- <p>Doctor signature:  ______________________________________</p> -->
                 <input type="hidden" name="imgdata" id="imgdatainput" value="">
+                <input type="hidden" name="newProcedure" id="newProcedure" value="<%= data.new %>">
                 <input type="hidden" name="procedureID" id="procedureID" value="<%= data.procedureID %>">
+                <input type="hidden" name="imgTotal" id="imgTotal" value="<%= data.imgTotal %>">
+                <input type="hidden" name="imgs" id="imgs0" value="<%= data.imgs[0] %>">
+                <input type="hidden" name="imgs" id="imgs1" value="<%= data.imgs[1] %>">
+                <input type="hidden" name="imgs" id="imgs2" value="<%= data.imgs[2] %>">
+                <input type="hidden" name="imgs" id="imgs3" value="<%= data.imgs[3] %>">
+                <input type="hidden" name="imgs" id="imgs4" value="<%= data.imgs[4] %>">
+                <input type="hidden" name="imgs" id="imgs5" value="<%= data.imgs[5] %>">
                 <button type="submit" id="submitButton" style="float: right;" class="btn btn-theme">Submit</button>
                 <!-- <input type="button" onclick="printDiv('printableArea')" value="print a div!" /> -->
         </form>
 </div>
+
+
+<script>
+    function SelectImage(imgNumber){
+        oldPanelDiv = document.getElementById('panelDiv');
+        if (oldPanelDiv != null){
+            oldPanelDiv.remove();
+        }
+        var imgContainer = document.getElementById('img-container');
+        var panelDiv = document.createElement('div');
+        panelDiv.id = "panelDiv";
+        panelDiv.className = 'imgselectpanel'
+        imgContainer.prepend(panelDiv);
+        
+        imgTotal = document.getElementById('imgTotal').value;
+        //var imgLineHTML = '<img src ="/imgsrv/<%= data.procedureID %>/IMG0.JPG" width="245" height="245" onclick="ImageClick(this.id, this.src,' + "0" + ',panelDiv)" id="panelImage1">'
+        //var imgLineHTML = '<input type="image" src="/imgsrv/<%= data.procedureID %>/IMG0.JPG" width="245" height="245"/>'
+        //panelDiv.innerHTML = imgLineHTML;
+
+        imgLinesHTML = [];
+        var longHTML = "<h3>Select an image for position " + (imgNumber) + "</h3>";
+        for (let index = 0; index < imgTotal; index++){
+            var imgLineHTML = '<img src ="/imgsrv/<%= data.procedureID %>/IMG'+ index +'.JPG" width="121" height="121" onclick="ImageClick(this.src,' + imgNumber + ',panelDiv,' + index + ')" id="panelImage1">'
+            longHTML = longHTML + imgLineHTML;
+            if (index == imgTotal - 1){panelDiv.innerHTML = longHTML;}
+        }
+        
+    }
+
+    function ImageClick(imageSrc, imgNumber, panelDiv, panelIMGfileNumber){
+        //image id is the number index of the newly selected image
+        //imgSrc is the src of the newly selected image
+        //img number is the image to be changed current number (html ID and imgs array pos)
+        document.getElementById('img' + imgNumber).src = imageSrc;
+        document.getElementById('imgs' + imgNumber).value = "IMG" + panelIMGfileNumber + ".JPG";
+        panelDiv.remove();
+        //}
+    }
+</script>
+
 
 
 <script>
@@ -115,7 +169,7 @@ function LoadPictures(){
         for (let index = 0; index < 6; index++) {
             var imgToCheck = document.getElementById('img' + index);
             if (imgToCheck.naturalWidth === 0) {
-            imgToCheck.src = "/img/245blank.jpg"
+            imgToCheck.src = "/img/245blank.png"
             }
             else{
             console.log("pic ok")
@@ -131,33 +185,24 @@ function LoadPictures(){
 
     var canvas = document.getElementById("diagram-canvas");
     var context = canvas.getContext("2d");
+    context.fillStyle = "black";
     var clicking = false;
+    canvas.width = 745;
+    canvas.height = 490;
+    var brushSize = 3;
 
-    var img = new Image();
-    img.src="/imgsrv/<%= data.procedureID %>/diagram.png";
-    img.onload=function(){
-        context.drawImage(img, 0, 0,canvas.width,canvas.height);
+    if (document.getElementById("newProcedure").value == "false"){
+        var img = new Image();
+        img.src="/imgsrv/<%= data.procedureID %>/diagram.png";
+        img.onload=function(){
+            context.drawImage(img, 0, 0,canvas.width,canvas.height);
+        }
     }
+
     window.addEventListener('mousemove', draw, false);
     window.addEventListener('mousedown', Clicking, false);
     window.addEventListener('mouseup', NotClicking, false);
 
-    /*function imgdata(){
-        var imgObj ={
-            data: canvas.toDataURL()
-        } 
-
-        const options = {
-            method: 'POST',
-            body: JSON.stringify(imgObj),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
-        fetch(APIURL + '/sendimagedata', options)
-        .then(res => res.json())
-        .then(res => console.log(res.msg));
-    }*/
     function ClearCanvas(){
       context.clearRect(0, 0, canvas.width, canvas.height);
       document.getElementById("imgdatainput").value = canvas.toDataURL();
@@ -166,22 +211,20 @@ function LoadPictures(){
         clicking = true;
     }
     function NotClicking(e){
-        var bla = 0;
-        while(bla < 25000){
-            bla++;
-            if (bla == 24999){
-                clicking = false;
-                document.getElementById("imgdatainput").value = canvas.toDataURL();
-            }
-        }
+
+        clicking = false;
+        document.getElementById("imgdatainput").value = canvas.toDataURL();
     }
     function draw(e) {
         if (clicking){
             var pos = getMousePos(canvas, e);
             posx = pos.x;
             posy = pos.y;
-            context.fillStyle = "#000000";
-            context.fillRect(posx, posy, 1, 1);
+            //
+            //context.fillRect(posx, posy, 5, 5);
+            context.beginPath();
+            context.arc(posx, posy, brushSize, 0, 2*Math.PI);
+            context.fill();
         }
     }
     function getMousePos(canvas, evt) {
@@ -190,6 +233,26 @@ function LoadPictures(){
             x: (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width,
             y: (evt.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height
         };
+    }
+    
+    function SetCanvasColour(colour){
+        console.log(colour + "Changed");
+        context.fillStyle = colour;
+    }
+    function SetCanvasBrushSize(direction){
+        if (direction == "up"){
+            brushSize++;
+            document.getElementById('brushSizeBox').value = brushSize;
+        }
+        if (direction == "down"){
+            if (brushSize > 0){
+                brushSize--;
+                document.getElementById('brushSizeBox').value = brushSize;
+            }
+        }
+        if (direction == "input"){
+            brushSize = document.getElementById('brushSizeBox').value;
+        }
     }
 </script>
 
@@ -211,21 +274,6 @@ function LoadPictures(){
     });
 </script>
 
-
-<script>
-    function printDiv(divName) {
-      document.getElementById('submitButton').style.visibility = 'hidden';
-      var printContents = document.getElementById(divName).innerHTML;
-      var originalContents = document.body.innerHTML;
- 
-      document.body.innerHTML = printContents;
- 
-      window.print();
- 
-      document.body.innerHTML = originalContents;
-      document.getElementById('submitButton').style.visibility = 'visible';
- }
-</script>
 
 <script>
     $('#reason').select2({

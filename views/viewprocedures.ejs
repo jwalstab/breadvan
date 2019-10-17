@@ -1,9 +1,10 @@
 <script type="text/javascript" src="/js/moment.min.js"></script>
 
 
-<h3><i class="fa fa-angle-right"></i> Procedures</h3>
+<!-- <h3><i class="fa fa-angle-right"></i> Procedures</h3> -->
 <div class="row mb">
   <div class="content-panel ">
+      <h3>Procedures</h3>
         <div class="searcher-form">
                 <input type="text" class="searcher-input" id="searchinput" onkeyup="Search(0)" placeholder="Search by date">
                 <div class="dropdown">
@@ -27,7 +28,7 @@
             <th> <a href="javascript:void(0)" onclick="SortCharacterTable(2)">Patient Name</a></th>
             <th> <a href="javascript:void(0)" onclick="SortCharacterTable(3)">Proceduralist</a></th>
             <th> <a href="javascript:void(0)" onclick="SortCharacterTable(4)">Clinic</a></th>
-            <th> Options</a></th>
+            <th style="width: 220px;"> Options</a></th>
           </tr>
         </thead>
         <tbody id="tb">
@@ -100,7 +101,7 @@ function LoadTable(){
         var row = cell.parentNode;
         var rowContainer = row.parentNode;
         while (rowContainer.firstChild) {rowContainer.removeChild(rowContainer.firstChild);}
-
+        addedProcedures.splice(addedProcedures.indexOf(procedureID), 1); //removes the procedure so it will reload if deleted
         // request options
         const options = {
             method: 'POST',

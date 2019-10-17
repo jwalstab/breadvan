@@ -39,15 +39,14 @@
                     "<%= data.colitis ? "checked" : "" %>> Colitis
                 </label>
                 <br><br>
-                
                 <div id = "img-container">
                     <img src ="/imgsrv/<%= data.procedureID %>/diagram.png" id="diagram-image">
-                    <img src ="/imgsrv/<%= data.procedureID %>/IMG0.JPG" id="img0" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/IMG1.JPG" id="img1" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/IMG2.JPG" id="img2" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/IMG3.JPG" id="img3" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/IMG4.JPG" id="img4" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/IMG5.JPG" id="img5" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[0] %>" id="img0" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[1] %>" id="img1" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[2] %>" id="img2" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[3] %>" id="img3" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[4] %>" id="img4" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[5] %>" id="img5" width="245" height="245">
                 </div>
                 <br><br>
                 <label class="control-label">Follow up with doctor required:</label>

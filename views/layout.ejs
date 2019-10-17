@@ -85,8 +85,10 @@ var APIURL = document.getElementById('localAddress').value
       <div id="sidebar" class="nav-collapse ">
         <!-- sidebar menu start-->
         <ul class="sidebar-menu" id="nav-accordion">
-          <h5 class="centered">USER: <%= loggedInName %></h5>
-          <h5 class="centered">ACCESS LEVEL: <%= loggedInTag %></h5>
+          <h5 class="centered">USER:</h5>
+          <h6 class="centered"><%= loggedInName %></h6>
+          <h5 class="centered">ACCESS LEVEL:</h5>
+          <h6 class="centered"><%= loggedInTag %></h6>
           <li class="sub-menu">
           <li>
                 <a href="/viewprocedures">
@@ -94,11 +96,21 @@ var APIURL = document.getElementById('localAddress').value
                 <span>Procedures</span>
                 </a>
           </li>
-          <li>
+<!--           <li>
               <a href="/setup">
               <i class="fa fa-cogs"></i>
               <span>Setup</span>
               </a>
+          </li> -->
+          <li class="sub-menu">
+              <a href="javascript:;">
+                <i class=" fa fa-cogs"></i>
+                <span>Setup</span>
+                </a>
+              <ul class="sub">
+                <li><a href="/reasons">Reasons</a></li>
+                <li><a href="/findings">Findings</a></li>
+              </ul>
           </li>
           <li>
               <a href="/sign_out">

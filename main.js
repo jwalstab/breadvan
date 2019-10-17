@@ -8,14 +8,19 @@ var MongoDb = require('mongodb');
 
 var os = require('os');
 var ifaces = os.networkInterfaces();
-console.log(ifaces);
+//console.log(ifaces);
+
 var localAddress = "http://" + ifaces.wlan0[0].address + ":3000"
 //var localAddress = "http://" + ifaces.WLAN[0].address + ":3000"
-//var localAddress = 'http://192.168.0.135:3000'
+
 console.log(localAddress);
 
 //var mongoServer = "mongodb://157.245.56.30:27017"
 var mongoServer = "mongodb://127.0.0.1:27017"
+
+//var mediaDrive = path.join(__dirname, 'public/scanner');
+var mediaDrive = '/media/medscan';
+var imgSrvDrive = path.join(__dirname, 'public/imgsrv');
 
 //SESSIONS//////
 var session = require('express-session')
@@ -88,7 +93,7 @@ MongoClient.connect(mongoServer, {useNewUrlParser: true, useUnifiedTopology: tru
   app.listen(port);
   console.log(`Bread Van has sucessfully started on ${port} and connected to the DB ` + new Date().toLocaleDateString() + `  ` + new Date().toLocaleTimeString());
   ScanForExtDrives();
-    var newUser = {
+/*     var newUser = {
     user: "Sussex",
     pass: "Sussex3688",
     name: "Sussex Clinic",
@@ -98,7 +103,7 @@ MongoClient.connect(mongoServer, {useNewUrlParser: true, useUnifiedTopology: tru
     usersdb.collection('users').insertOne(newUser, function(err,result) {
         if(err){console.log(err)};
         console.log("Creating Sussex user account if none...");
-    });
+    }); */
 });
 
 app.use(function(req, res, next) {
@@ -113,9 +118,7 @@ app.use(function(req, res, next) {
 //var directoryPath = path.join(__dirname, 'public/imgsrv');
 //var hardDrivePath = 'media/medscan/HDD'
 
-//var mediaDrive = path.join(__dirname, 'public/scanner');
-var mediaDrive = '/media/medscan';
-var imgSrvDrive = path.join(__dirname, 'public/imgsrv');
+
 
 var extDrives = [];
 function ScanForExtDrives(){
@@ -144,7 +147,7 @@ function ScanForExtDrives(){
             });
         }
     });
-    setTimeout(function(){ScanForExtDrives();}, 10000);
+    setTimeout(function(){ScanForExtDrives();}, 1000);
 }
 function ScanAction(dateFolder, dateText){
     console.log('Starting scan');
@@ -231,6 +234,7 @@ function CreateProcedure(inf,procedureID,patientID, pid_DIR){
                     followUpDiscuss: '',
                     followUpDate: '',
                     imgs:imgList,
+                    imgTotal: imgList.length,
                     diagramImg: null,
                 }
                 proceduresdb.collection('procedures').insertOne(procedureObject, function(err,result) {
@@ -315,7 +319,35 @@ app.get('/setup', (req, res) => {
     });
 });
 
+/* app.get('/reasons', (req, res) => {
+    res.render('reasons',{
+        loggedInName:req.session.name,
+        loggedInTag:req.session.tag,
+        localAddress:localAddress
+    });
+}); */
 
+app.get('/reasons', (req, res) => {
+    res.render('setupsingle',{
+        loggedInName:req.session.name,
+        loggedInTag:req.session.tag,
+        localAddress:localAddress,
+        single: 'reason',
+        plural: 'reasons',
+        displayName: 'Reasons'
+    });
+});
+
+app.get('/findings', (req, res) => {
+    res.render('setupsingle',{
+        loggedInName:req.session.name,
+        loggedInTag:req.session.tag,
+        localAddress:localAddress,
+        single: 'findings',
+        plural: 'findings',
+        displayName: 'Findings'
+    });
+});
 
 
 //API SERVER START //////////////////////////////////////////////////////////////////////////////////////
@@ -424,11 +456,7 @@ app.post('/setupnew/:collection', (req, res) => {
     setupdb.collection(req.params.collection).insertOne(req.body).then (function() {
         console.log('ok')
     });
-    res.render('setup',{
-        localAddress:localAddress,
-        loggedInName:req.session.name,
-        loggedInTag:req.session.tag
-    });
+    res.redirect('/' + req.params.collection + '');
 });
 
 app.get('/setupget/:collection', (req, res) => {
@@ -440,14 +468,10 @@ app.get('/setupget/:collection', (req, res) => {
 app.post('/setupdelete/:collection', (req, res) => {
     console.log(req.body);
     setupdb.collection(req.params.collection).deleteOne(req.body).then (function(err,docs) {
-/*         var response = {
-            msg: "Delete request for report ID " + req.body._id + " recieved"
-        } */
-        res.render('setup',{
-            localAddress:localAddress,
-            loggedInName:req.session.name,
-            loggedInTag:req.session.tag
-        });
+        var response = {
+            msg: "Delete request for " + req.body + " recieved"
+        }
+        res.send(response);
     });
 });
 
