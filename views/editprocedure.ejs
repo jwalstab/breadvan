@@ -46,22 +46,22 @@
                       </option>
                   </select>
                 <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox1" name="bowelPreparation" value="Yes"  <%= data.bowelPreparation == "Yes" ? "checked" : "" %>> Bowel Preparation
+                    <input type="checkbox" id="inlineCheckbox1" name="bowelPreparation" value="Yes" <%= data.bowelPreparation == "Yes" ? "checked" : "" %>> Bowel Preparation
                   </label>
                 <label class="checkbox-inline">
-                <input type="checkbox" id="inlineCheckbox1" name="polyps" value="Yes"  <%= data.polyps == "Yes" ? "checked" : "" %>> Polyps
+                <input type="checkbox" id="inlineCheckbox2" name="polyps" value="Yes" <%= data.polyps == "Yes" ? "checked" : "" %>> Polyps
                 </label>
                 <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox2" name="completeColon" value="Yes"<%= data.completeColon ? "checked" : "" %>> Complete Colonoscopy
+                    <input type="checkbox" id="inlineCheckbox3" name="completeColon" value="Yes" <%= data.completeColon == "Yes" ? "checked" : "" %>> Complete Colonoscopy
                 </label>
                 <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox3" name="haemorrhoids" value="Yes"<%= data.haemorrhoids ? "checked" : "" %>> Haemorrhoids
+                    <input type="checkbox" id="inlineCheckbox4" name="haemorrhoids" value="Yes" <%= data.haemorrhoids == "Yes" ? "checked" : "" %>> Haemorrhoids
                 </label>
                 <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox3" name="diverticularDisease" value="Yes"<%= data.diverticularDisease ? "checked" : "" %>> Diverticular Disease
+                    <input type="checkbox" id="inlineCheckbox5" name="diverticularDisease" value="Yes" <%= data.diverticularDisease == "Yes" ? "checked" : "" %>> Diverticular Disease
                 </label>
                 <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox3" value="Yes"<%= data.colitis ? "checked" : "" %>> Colitis
+                    <input type="checkbox" id="inlineCheckbox6" value="Yes" <%= data.colitis == "Yes" ? "checked" : "" %>> Colitis
                 </label>
                 <br><br>
                 <button type="button" onclick="SetCanvasBrushSize('down')" style="width: 13.5%" class="btn btn-theme">Brush Size -</button>
@@ -99,7 +99,7 @@
                 <br><br>
                 <label class="control-label">If yes, details:</label>
                 <input type="text" style="width: 460px;" name="followupdetails" value="<%= data.followupdetails %>" >
-                <br><br>
+                <br>
                 <label class="control-label">Recommended timeframe for follow up colonoscopy:</label>
                 <input type="text" onclick="StartDate()" id="fdate" style="width: 160px;" name="followUpDate" value="<%= data.followUpDate %>"><br>
                 <p>Or</p>
@@ -116,13 +116,20 @@
                 <input type="hidden" name="imgs" id="imgs3" value="<%= data.imgs[3] %>">
                 <input type="hidden" name="imgs" id="imgs4" value="<%= data.imgs[4] %>">
                 <input type="hidden" name="imgs" id="imgs5" value="<%= data.imgs[5] %>">
-                <button type="submit" id="submitButton" style="float: right;" class="btn btn-theme">Submit</button>
+                <button type="button" onclick="window.location='/viewprocedures'" id="submitButton" style="float: left;" class="btn btn-theme">Cancel</button>
+                <input type="hidden" name="printNow" id="printnow" value="no">
+                <button type="submit" onclick="SubmitAndPrint()" id="submitButton" style="float: right; margin:0px,0px,0px,3px;" class="btn btn-theme">Submit And Print</button>
+                <button type="submit" id="submitButton" style="float: right;" class="btn btn-theme">Submit Without Printing</button>
                 <!-- <input type="button" onclick="printDiv('printableArea')" value="print a div!" /> -->
         </form>
 </div>
 
 
 <script>
+    function SubmitAndPrint(){
+        document.getElementById('printnow').value = 'yes';
+    }
+
     function SelectImage(imgNumber){
         oldPanelDiv = document.getElementById('panelDiv');
         if (oldPanelDiv != null){

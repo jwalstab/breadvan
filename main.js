@@ -10,16 +10,16 @@ var os = require('os');
 var ifaces = os.networkInterfaces();
 //console.log(ifaces);
 
-var localAddress = "http://" + ifaces.wlan0[0].address + ":3000"
-//var localAddress = "http://" + ifaces.WLAN[0].address + ":3000"
+//var localAddress = "http://" + ifaces.wlan0[0].address + ":3000"
+var localAddress = "http://" + ifaces.WLAN[0].address + ":3000"
 
 console.log(localAddress);
 
-//var mongoServer = "mongodb://157.245.56.30:27017"
-var mongoServer = "mongodb://127.0.0.1:27017"
+var mongoServer = "mongodb://157.245.56.30:27017"
+//var mongoServer = "mongodb://127.0.0.1:27017"
 
-//var mediaDrive = path.join(__dirname, 'public/scanner');
-var mediaDrive = '/media/medscan';
+var mediaDrive = path.join(__dirname, 'public/scanner');
+//var mediaDrive = '/media/medscan';
 var imgSrvDrive = path.join(__dirname, 'public/imgsrv');
 
 //SESSIONS//////
@@ -274,9 +274,10 @@ app.get('/editprocedure/:procedureID', (req, res) => {
     var openProcedureQuery = {
         procedureID: req.params.procedureID
     }
-    console.log(openProcedureQuery)
+    
     proceduresdb.collection('procedures').find(openProcedureQuery).toArray (function(err,docs) {
         console.log(docs);
+        //console.log("OPENING!");
         res.render('editprocedure',{
             loggedInName:req.session.name,
             loggedInTag:req.session.tag,
@@ -390,16 +391,17 @@ app.get("/sign_out", function(req, res) {
 
 //PROCEDURES
 
-app.post('/updateprocedure', (req,res) =>{
+app.post('/updateprocedure/', (req,res) =>{
+    console.log(req.body)
     req.body.new = false;
     var updateProcedureQuery = {
         procedureID: req.body.procedureID
     }
     if (req.body.bowelPreparation == null){ req.body.bowelPreparation = "No"}
     if (req.body.polyps == null){ req.body.polyps = "No";}
-    if (req.body.completeColon == null){ req.body.completeColon = "No"}
-    if (req.body.haemorrhoids == null){ req.body.haemorrhoids = "No"}
-    if (req.body.diverticularDisease == null){ req.body.diverticularDisease = "No"}
+    if (req.body.completeColon == null){ req.body.completeColon = "No";}
+    if (req.body.haemorrhoids == null){ req.body.haemorrhoids = "No";}
+    if (req.body.diverticularDisease == null){ req.body.diverticularDisease = "No";}
     
     proceduresdb.collection('procedures').deleteOne(updateProcedureQuery).then (function(result) {
         if(result.deletedCount == 1){console.log("Record " + req.body.procedureID + " cleared")}
@@ -409,7 +411,12 @@ app.post('/updateprocedure', (req,res) =>{
             require("fs").writeFile( imgSrvDrive + "/"+ req.body.procedureID + "/" + "diagram.png", base64Data, 'base64', function(err) {
                 if(err){console.log(err)};
                 console.log('Record:' + req.body.procedureID + ' recreated.');
-                res.redirect('viewprocedures');
+                if (req.body.printNow == "yes"){
+                    res.redirect('printprocedure/' + req.body.procedureID)
+                }
+                else{
+                    res.redirect('viewprocedures');
+                }
             });
         });
     });

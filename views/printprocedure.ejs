@@ -26,17 +26,16 @@
                 <input type="checkbox" id="inlineCheckbox1" name="polyps" value="Yes"  <%= data.polyps == "Yes" ? "checked" : "" %>> Polyps
                 </label>
                 <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox2" name="completeColon" value="Yes"<%= data.completeColon ? "checked" : "" %>> Complete Colonoscopy
+                    <input type="checkbox" id="inlineCheckbox2" name="completeColon" value="Yes"<%= data.completeColon == "Yes" ? "checked" : "" %>> Complete Colonoscopy
                 </label>
                 <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox3" name="haemorrhoids" value="Yes"<%= data.haemorrhoids ? "checked" : "" %>> Haemorrhoids
+                    <input type="checkbox" id="inlineCheckbox3" name="haemorrhoids" value="Yes"<%= data.haemorrhoids == "Yes" ? "checked" : "" %>> Haemorrhoids
                 </label>
                 <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox3" name="diverticularDisease" value="Yes"<%= data.diverticularDisease ? "checked" : "" %>> Diverticular Disease
+                    <input type="checkbox" id="inlineCheckbox3" name="diverticularDisease" value="Yes"<%= data.diverticularDisease == "Yes" ? "checked" : "" %>> Diverticular Disease
                 </label>
                 <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox3" value="Yescd 
-                    "<%= data.colitis ? "checked" : "" %>> Colitis
+                    <input type="checkbox" id="inlineCheckbox3" value="Yes" <%= data.colitis == "Yes" ?  "checked" : "" %>> Colitis
                 </label>
                 <br><br>
                 <div id = "img-container">
