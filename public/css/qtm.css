@@ -27,8 +27,10 @@
 
   .A4 {
     background: white;
+    /*width: 21cm;*/
     width: 21cm;
-    height: 29.7cm;
+    /*height:29.7cm */
+    height: 30cm;
     display: block;
     margin: 0 auto;
     padding: 10px 25px;
@@ -37,11 +39,57 @@
     overflow-y: hidden;
     box-sizing: border-box;
   }
+  
+.underline
+{
+    border: 4px solid #666;
+    position: absolute;
+    width: 100%;
+}
+
+p.heading {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: large;
+  font-weight: bold;
+}
+
+p.text {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+}
+
+p.strongtext {
+  font-family:  Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+p.patientIDboxtext {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: lightgray;
+
+}
+
+.patientIDbox{
+  border: solid 1px lightgray;
+}
 
   .limited-table {
     border: 1px solid #ddd;
     overflow: auto;
   }
+
+  
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 0;
+}
 
   .searcher-form {
     /* This bit sets up the horizontal layout */
@@ -115,8 +163,8 @@
 
 #img-container{
   display:inline-block;
-  width:745px; 
-  height:490px;
+  width:815px; 
+  height:200px;
   margin: 0 auto; 
   background: lightgray; 
   position:relative; 
@@ -124,13 +172,19 @@
   border-radius: 0px; 
 }
   /*box-shadow: 0 5px 50px #333}*/
-
+/*
 #diagram-canvas{
   position: absolute;
   width: 745px;
   height: 490px;
   z-index:20;
-}
+}*/
+.diagram{
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  z-index:20;
+}*/
 #diagram-image{
   position: absolute;
   width: 745px;
@@ -164,4 +218,22 @@
   overflow: scroll;
   position: absolute;
   z-index:30;
+}
+
+.pform {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  border-radius: 5px; /* 5px rounded corners */
+  background-color:seashell;
+  margin: 0 auto; 
+}
+.psection {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  border-radius: 5px; /* 5px rounded corners */
+  background-color:seashell;
+  padding: 2px;
+}
+.pcontainer {
+  padding: 2px 16px;
 }

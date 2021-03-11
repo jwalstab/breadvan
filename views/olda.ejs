@@ -1,0 +1,155 @@
+
+<div id ="printableArea">
+    <div class="A4" style="position: relative;">
+        <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[0] %>" id="img0" width="200" height="200" style="position:absolute; top:180px; right: 10px;">
+        <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[1] %>" id="img1" width="200" height="200" style="position:absolute; top:400px; right: 10px;">
+        <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[2] %>" id="img2" width="200" height="200" style="position:absolute; top:620px; right: 10px;">
+        <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[3] %>" id="img3" width="200" height="200"style="position:absolute; top:840px; right: 10px;">
+
+        <p class="heading" style="position: absolute; top: 0px; left:10px;">Procedure Report</p>
+        <p class="heading" style="position: absolute; top: 0px; right:10px">Colonoscopy</p>
+
+        <hr style="z-index: -10; width: 780px; position: absolute; top:10px; left:10px">
+
+        <img style="position: absolute; top: 35px; left: 5px; " src="/img/cslogo.png"/>
+        <!-- <img style="position: absolute; top: 45px; right:10px;" src="/img/idsmall.png"/> -->
+        <div class="patientIDbox" style="width:200px; height:100px; position: absolute; top: 45px; right:10px;">Patient ID Label</div>
+        <p class="text" style="position: absolute; top: 115px; left:10px">
+            <b><%= data.surgerySelection %><br>
+            <%= data.surgeryName %></b><br>
+            <%= data.surgeryAddress %><br>
+            Sydney, NSW 2000
+        </p>
+        <hr style="z-index: -10; width: 550px; position: absolute; top:175px; left:10px">
+
+        <p class="strongtext"  style="position: absolute; top: 190px; left:10px">
+            Patient Name:<br>
+            Medicare Number: <br>
+            Date of Birth:<br>
+            Record Number:<br>
+            Date & Time of Procedure:<br>
+            Reffering Physician:<br>
+            Endoscopist:
+        </p>
+
+        <p class="text" style="position: absolute; top: 190px; left:200px">
+            <%= data.patientName %><br>
+            <%= data.patientMedicare %><br>
+            <%= data.patientDOB %><br>
+            <%= data.recordNumber %><br>
+            <%= data.examDateAndTime %><br>
+            <%= data.refferingPhysican %><br>
+            <%= data.endoscopist %><br>
+        </p>
+        <hr style="z-index: -10; width:550px; position: absolute; top:300px; left:10px;">
+
+        <p class="text" style="position: absolute; top: 315px; left:10px; width:550px">
+            <b>Procedure Performed: </b>
+            <br>
+            <%= data.procedurePerformed %>
+            <br>
+            <b>Indications For Examination:</b>
+            <br>
+            <%= data.indicationsForExamination %>
+            <br>
+            <b>Findings: </b>
+            <br>
+            <%= data.findings %>
+            <br>
+            <b>Endoscopic Diagnosis:</b>
+            <br>
+            <%= data.endoscopicDiagnosis %>
+            <br>
+            <b>Recommendations:</b>
+            <br>
+            <%= data.recommendations %>
+        </p>
+
+        <hr style="z-index: -10; width:550px; position: absolute; top:555px; left:10px">
+
+        <p class="text" style="position: absolute; top: 570px; left:10px">
+            <b>INSTRUMENTS: </b><%= data.instruments %> 
+            <b> BOWEL PREP QUALITY: </b><%= data.qualityOfBowelPrep %>
+            <br>
+            <b>MEDICATIONS: </b><%= data.medications %>
+            <br>
+            <b>BOSTEN BOWEL PREP SCORE - </b>
+            <br>
+            <b>RIGHT COLON:</b> <%= data.rightColon %> <b>TRANVERSE COLON:</b> <%= data.tranvserseColon %> <b>LEFT COLON:</b> <%= data.leftColon %> <b>TOTAL COLON:</b> <%= data.totalColon %>
+            <br>
+            <b>WITHDRAWAL TIME: </b> <%= data.withdrawalTime %> <b>EXTENT OF EXAM: </b> <%= data.extentOfExam %> 
+            <br>
+            <b>LANDMARKS INDENTIFIED: </b> <%= data.landmarksIndentified %>
+            <br>
+            <b>VISUALIZATION: </b> <%= data.visualization %> <b>TOLERANCE: </b> <%= data.tolerance %> <b>COMPLICATIONS: </b> <%= data.complications %> <b>LIMITATIONS: </b> <%= data.limitations %>
+        </p>
+
+        <hr style="z-index: -10; width:550px; position: absolute; top:680px; left:10px">
+
+        <p class="text" style="width:550px; position: absolute; top: 695px; left:10px">
+            <b>Procedure Technique:</b>
+            <br>
+            <%= data.procedureTechnique %>
+        </p>
+        
+        <hr style="z-index: -10; width:550px; position: absolute; top:880px; left:10px">
+
+        <p class="text" style=" width:550px; position:absolute; top: 905px; left:10px;">
+            <b>CPT Code: </b>
+            <br>
+            <%= data.cptCode %>
+            <br>
+            <br>
+            <b>ICD Code: </b>
+            <br>
+            <%= data.icdCode %>
+            <br>
+        </p>
+        <p class="text" style=" width:550px; position:absolute; top: 1100px; left:10px;">
+            <b>signature: </b> ________________________________________  <%= data.endoscopist %>
+        </p>
+    </div>
+    <div class="A4" style="position: relative;">
+        <p class="heading" style="position: absolute; top: 20px; left:20px;">Procedure Report</p>
+        <p class="heading" style="position: absolute; top: 20px; right:55px">Colonoscopy</p>
+        <hr style="z-index: -10; width:96%; position: absolute; top:25px;">
+        <img style="position: absolute; top: 80px; left:10px;" src="/img/sdslogo.jpg"/>
+        <img style="position: absolute; top: 80px; right:10px;" src="/img/idsmall.png"/>
+</div>
+
+
+<script>
+
+setTimeout(function(){LoadPictures();}, 2000);
+function LoadPictures(){
+    for (let index = 0; index < 6; index++) {
+        var imgToCheck = document.getElementById('img' + index);
+        if (imgToCheck.naturalWidth === 0) {
+            imgToCheck.src = "/img/245blank.jpg"
+        }
+        else{
+        console.log("pic ok")
+        }
+    }
+}
+
+
+
+</script>
+
+
+
+<script>
+    setTimeout(function(){printDiv('printableArea');}, 1000);
+        function printDiv(divName) {
+          //document.getElementById('submitButton').style.visibility = 'hidden';
+          var printContents = document.getElementById(divName).innerHTML;
+          var originalContents = document.body.innerHTML;
+     
+          document.body.innerHTML = printContents;
+          window.print();
+          //document.body.innerHTML = originalContents;
+          //window.location.replace("<%= localAddress %>/viewprocedures")
+          //document.getElementById('submitButton').style.visibility = 'visible';
+     }
+</script>

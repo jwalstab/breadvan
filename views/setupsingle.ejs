@@ -1,17 +1,16 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 
-<input type="hidden" id="setupDataSingle" value="<%= single %>">
+<input type="hidden" id="setupDataSingle" value="<%= displayName %>">
 <div class="row mb">
     <div class="form-panel">
-        <form action="/setupnew/<%= plural %>" method="POST">
+        <form action="/setupnew/<%= dataName %>/<%= displayName %>" method="POST">
                 <h3><%= displayName %></h3>
                 <br>
-                <input type="text" id="new<%= single %>" style="width: 70%;" name="<%= single %>">
-                <button type="submit" class="btn btn-success">Add <%= single %></button>
-                
+                <input type="text" id="new<%= dataName %>" style="width: 70%;" name="<%= dataName %>">
+                <button type="submit" class="btn btn-success">Add new</button>
         </form>
   <div class="content-panel ">
-          <input type="text" class="form-control" id="searchinput" onkeyup="Search(0)" placeholder="Search <%= plural %>">
+          <input type="text" class="form-control" id="searchinput" onkeyup="Search(0)" placeholder="Search <%= displayName %> List">
     <div class="limited-table" style="height: 400px;" id="tablediv">
       <table cellpadding="0" id="table" cellspacing="0" border="0" class="display table table-bordered" id="hidden-table-info" >
         <thead>
@@ -25,11 +24,12 @@
 
 <script>
 
-var cols = ['<%= single %>']
+var cols = ['<%= dataName %>']
 
-fetch(APIURL + '/setupget/<%= plural %>')
+fetch(APIURL + '/setupget/<%= dataName %>')
 .then((resp) => resp.json())
 .then(function(data) {
+  console.log(data);
     if (data.length > 0){
         var tableRef = document.getElementById('tablediv').getElementsByTagName('tbody')[0];
         for (var i = 0; i < data.length; i++){ //goes through the data one by one
@@ -42,6 +42,7 @@ fetch(APIURL + '/setupget/<%= plural %>')
                 textData = "'" + thisdata[thisvalue] + "'"; //SAVES TEXT STRING FOR DELETE TAG, ONLY WORKS WITH A SINGLE COLUM SETUP
                 var newCell  = newRow.insertCell(j); //check length of cols array then runs through it
                 var newText = document.createTextNode(thisdata[thisvalue]); // adds a cell with the data and value matched for it
+                console.log(thisdata[thisvalue]);
                 newCell.appendChild(newText); // appends new cell to the table
                 lastCellCount = j;
             }
@@ -80,7 +81,7 @@ fetch(APIURL + '/setupget/<%= plural %>')
         }
         
         // send POST request
-        fetch(APIURL + '/setupdelete/<%= plural %>', options)
+        fetch(APIURL + '/setupdelete/<%= dataName %>', options)
             //.then(res => res.json())
             .then(console.log('ok'));
     }

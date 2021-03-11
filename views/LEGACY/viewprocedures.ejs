@@ -1,0 +1,336 @@
+<script type="text/javascript" src="/js/moment.min.js"></script>
+
+
+<!-- <h3><i class="fa fa-angle-right"></i> Procedures</h3> -->
+<div class="row mb">
+  <div class="content-panel ">
+      <h3>Procedures</h3>
+        <div class="searcher-form">
+                <input type="text" class="searcher-input" id="searchinput" onkeyup="Search(0)" placeholder="Search by date">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle"type="button" data-toggle="dropdown">Select Search Filter
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(0, 'date')">Date</a></li>
+                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(1, 'patient ID')">Patient ID</a></li>
+                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(2, 'patient name')">Patient Name</a></li>
+                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(3, 'proceduralist')">Proceduralist</a></li>
+                      <li><a href="javascript:void(0)" onclick="SetSearchFilter(4, 'clinic')">Clinic</a></li>
+                    </ul>
+                  </div>
+            </div>
+    <div class="limited-table" style="height: 400px;" id="tablediv">
+      <table cellpadding="0" id="table" cellspacing="0" border="0" class="display table table-bordered" id="hidden-table-info" >
+        <thead>
+          <tr>
+            <th> <a href="javascript:void(0)" onclick="SortDateTable(0)">Date</a></th>
+            <th> <a href="javascript:void(0)" onclick="SortNumberTable(1)">Patient ID</a></th>
+            <th> <a href="javascript:void(0)" onclick="SortCharacterTable(2)">Patient Name</a></th>
+            <th> <a href="javascript:void(0)" onclick="SortCharacterTable(3)">Proceduralist</a></th>
+            <th> <a href="javascript:void(0)" onclick="SortCharacterTable(4)">Clinic</a></th>
+            <th style="width: 220px;"> Options</a></th>
+          </tr>
+        </thead>
+        <tbody id="tb">
+</div>
+
+<script>
+
+var cols = ['examDateAndTime','patientID','patientName','proceduralist','clinic']
+var addedProcedures = ["DummyRecord"];
+var firstLoad = true;
+LoadTable();
+function LoadTable(){
+  console.log(addedProcedures);
+  fetch(APIURL + '/getprocedures')
+  .then((resp) => resp.json())
+  .then(function(data) {
+      if (data.length >= 0){
+          var tableRef = document.getElementById('tablediv').getElementsByTagName('tbody')[0];
+          for (var i = 0; i < data.length; i++){ //goes through the data one by one
+            var procedureAlreadyExists = (addedProcedures.indexOf(data[i].procedureID) > -1);
+            if (procedureAlreadyExists == false){
+              addedProcedures.push(data[i].procedureID);
+              var procedureIDString = "'" + data[i].procedureID + "'"
+              var newRow = tableRef.insertRow(); //inserts a new row for the table
+  
+              if (data[i].new == false){newRow.style.backgroundColor = "mistyrose";} //colour change based on new or old
+              else{newRow.style.backgroundColor = "aquamarine";} //colour change based on new or old
+              
+              var lastCellCount;
+              for (var j = 0; j < cols.length; j++){ //jumps into a loop to go through each colum
+                  var thisdata = data[i]; // seperates the data instance from api
+                  var thisvalue = cols[j]; // gets the value from the cols array to check againt
+                  var newCell  = newRow.insertCell(j); //check length of cols array then runs through it
+                  var newText = document.createTextNode(thisdata[thisvalue]); // adds a cell with the data and value matched for it
+                  newCell.appendChild(newText); // appends new cell to the table
+                  lastCellCount = j;
+              }
+              var optionCell = newRow.insertCell();
+              var optionCellTest = document.createElement('div');
+              var BtnHTML;
+              if (data[i].new == true){
+                viewBtnHTML = '<button class="btn btn-theme" a href="javascript:void(0)" onclick="OpenProcedure('+ procedureIDString +')">Create</a></button>';
+              }
+              else{
+                viewBtnHTML = '<button class="btn btn-theme" a href="javascript:void(0)" onclick="OpenProcedure('+ procedureIDString +')">Edit</a></button>';
+              }
+              printBtnHTML = '<button class="btn btn-theme" a href="javascript:void(0)" onclick="PrintProcedure('+ procedureIDString +', this)">Print</a></button>';
+              deleteBtnHTML = '<button class="btn btn-theme" a href="javascript:void(0)" onclick="DeleteProcedure('+ procedureIDString +', this)">Delete</a></button>';
+              optionCellTest.innerHTML = (viewBtnHTML + "   " + printBtnHTML + "  " + deleteBtnHTML);
+              optionCell.appendChild(optionCellTest);
+            }
+          }
+          if (firstLoad == true){
+            SortDateTable(0);
+            firstLoad = false;
+          }
+          setTimeout(function(){LoadTable();}, 5000);
+      }
+  });
+}
+
+</script>
+
+<script>
+    function DeleteProcedure(procedureID, btn){
+        const reportObj = {
+            procedureID: procedureID
+        };
+        var cell = btn.parentNode;
+        var row = cell.parentNode;
+        var rowContainer = row.parentNode;
+        while (rowContainer.firstChild) {rowContainer.removeChild(rowContainer.firstChild);}
+        addedProcedures.splice(addedProcedures.indexOf(procedureID), 1); //removes the procedure so it will reload if deleted
+        // request options
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(reportObj),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        
+        // send POST request
+        fetch(APIURL + '/deleteprocedure', options)
+            .then(res => res.json())
+            .then(res => console.log(res.msg));
+    }
+    
+    function OpenProcedure(procedureID){
+        console.log("viewing " + procedureID);
+        window.location = APIURL + "/editprocedure/" + procedureID;
+    }
+
+    function PrintProcedure(procedureID){
+      console.log("viewing " + procedureID);
+      window.location = APIURL + "/printprocedure/" + procedureID;
+  }
+</script>
+
+<script>
+        function SetSearchFilter(n, searchby){
+            document.getElementById('searchinput').placeholder = "Search by " + searchby + "...";
+            console.log(document.getElementById('searchinput'));
+            chosenSearchRow = n;
+        }
+        
+        var chosenSearchRow = 0;
+            //SEARCH FUNCTION
+        function Search() {
+            // Declare variables
+            var input, filter, mtable, tr, td, i, txtValue;
+            input = document.getElementById("searchinput");
+            console.log(input);
+            filter = input.value.toUpperCase();
+            mtable = document.getElementById("table");
+            tr = mtable.getElementsByTagName("tr");
+        
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[chosenSearchRow];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+                } else {
+                tr[i].style.display = "none";
+                }
+            }
+            }
+        }
+        </script>
+
+<script>
+    
+    function SortNumberTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("table");
+        switching = true;
+        // Set the sorting direction to ascending:
+        dir = "asc";
+        /* Make a loop that will continue until
+        no switching has been done: */
+        while (switching) {
+        // Start by saying: no switching is done:
+        switching = false;
+        rows = table.rows;
+        /* Loop through all table rows (except the
+        first, which contains table headers): */
+        for (i = 1; i < (rows.length - 1); i++) {
+            // Start by saying there should be no switching:
+            shouldSwitch = false;
+            /* Get the two elements you want to compare,
+            one from current row and one from the next: */
+            x = rows[i].getElementsByTagName("TD")[n];
+            y = rows[i + 1].getElementsByTagName("TD")[n];
+            /* Check if the two rows should switch place,
+            based on the direction, asc or desc: */
+            if (dir == "asc") {
+                if (Number(x.innerHTML) > Number(y.innerHTML)) {
+                    shouldSwitch = true;
+                    break;
+                  }
+            } else if (dir == "desc") {
+                if (Number(x.innerHTML) < Number(y.innerHTML)) {
+                    shouldSwitch = true;
+                    break;
+                  }
+            }
+        }
+        if (shouldSwitch) {
+            /* If a switch has been marked, make the switch
+            and mark that a switch has been done: */
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            // Each time a switch is done, increase this count by 1:
+            switchcount ++;
+        } else {
+            /* If no switching has been done AND the direction is "asc",
+            set the direction to "desc" and run the while loop again. */
+            if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+            }
+        }
+        }
+    }
+
+    function SortDateTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("table");
+        switching = true;
+        dir = "asc";
+        /* Make a loop that will continue until
+        no switching has been done: */
+        while (switching) {
+        // Start by saying: no switching is done:
+        switching = false;
+        rows = table.rows;
+        /* Loop through all table rows (except the
+        first, which contains table headers): */
+        for (i = 1; i < (rows.length - 1); i++) {
+            // Start by saying there should be no switching:
+            shouldSwitch = false;
+            /* Get the two elements you want to compare,
+            one from current row and one from the next: */
+            x = rows[i].getElementsByTagName("TD")[n];
+            y = rows[i + 1].getElementsByTagName("TD")[n];
+            /* Check if the two rows should switch place,
+            based on the direction, asc or desc: */
+            var xSeconds = moment(x.innerHTML, "YYYY/MM/DD HH:mm").unix();
+            var ySeconds = moment(y.innerHTML, "YYYY/MM/DD HH:mm").unix();  
+            if (dir == "asc") {
+                if (Number(xSeconds) > Number(ySeconds)) {
+                    shouldSwitch = true;
+                    break;
+                  }
+            } else if (dir == "desc") {
+                if (Number(xSeconds) < Number(ySeconds)) {
+                    shouldSwitch = true;
+                    break;
+                  }
+            }
+        }
+        if (shouldSwitch) {
+            /* If a switch has been marked, make the switch
+            and mark that a switch has been done: */
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            // Each time a switch is done, increase this count by 1:
+            switchcount ++;
+        } else {
+            /* If no switching has been done AND the direction is "asc",
+            set the direction to "desc" and run the while loop again. */
+            if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+            }
+        }
+        }
+    }
+
+    function SortCharacterTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("table");
+        switching = true;
+        // Set the sorting direction to ascending:
+        dir = "asc";
+        /* Make a loop that will continue until
+        no switching has been done: */
+        while (switching) {
+          // Start by saying: no switching is done:
+          switching = false;
+          rows = table.rows;
+          /* Loop through all table rows (except the
+          first, which contains table headers): */
+          for (i = 1; i < (rows.length - 1); i++) {
+            // Start by saying there should be no switching:
+            shouldSwitch = false;
+            /* Get the two elements you want to compare,
+            one from current row and one from the next: */
+            x = rows[i].getElementsByTagName("TD")[n];
+            y = rows[i + 1].getElementsByTagName("TD")[n];
+            /* Check if the two rows should switch place,
+            based on the direction, asc or desc: */
+            if (dir == "asc") {
+              if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                // If so, mark as a switch and break the loop:
+                shouldSwitch = true;
+                break;
+              }
+            } else if (dir == "desc") {
+              if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                // If so, mark as a switch and break the loop:
+                shouldSwitch = true;
+                break;
+              }
+            }
+          }
+          if (shouldSwitch) {
+            /* If a switch has been marked, make the switch
+            and mark that a switch has been done: */
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+            // Each time a switch is done, increase this count by 1:
+            switchcount ++;
+          } else {
+            /* If no switching has been done AND the direction is "asc",
+            set the direction to "desc" and run the while loop again. */
+            if (switchcount == 0 && dir == "asc") {
+              dir = "desc";
+              switching = true;
+            }
+          }
+        }
+      }
+
+</script>
+
+<script>
+{
+    //var checkDate = moment("27/09/2019 03:54 PM", "DD-MM-YYYY");
+    var seconds = moment("27/09/2019 03:54 PM", "DD-MM-YYYY").unix()
+}
+
+</script>

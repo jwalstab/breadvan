@@ -10,27 +10,28 @@ var os = require('os');
 var ifaces = os.networkInterfaces();
 //console.log(ifaces);
 
-var localAddress = "http://" + ifaces.wlan0[0].address + ":3000"
-//var localAddress = "http://" + ifaces.WLAN[0].address + ":3000"
+//var localAddress = "http://" + ifaces.wlan0[0].address + ":3000"
+var localAddress = "http://" + ifaces.WLAN[0].address + ":3000"
 
 console.log(localAddress);
 
-//var mongoServer = "mongodb://157.245.56.30:27017"
+//var mongoServer = "mongodb://masteruser:Quantum4277@157.245.56.30:27017"
 var mongoServer = "mongodb://127.0.0.1:27017"
 
-//var mediaDrive = path.join(__dirname, 'public/scanner');
-var mediaDrive = '/media/medscan';
+var mediaDrive = path.join(__dirname, 'public/scanner');
+//var mediaDrive = '/media/medscan';
 var imgSrvDrive = path.join(__dirname, 'public/imgsrv');
 
 //SESSIONS//////
 var session = require('express-session')
 var MongoDBStore = require('connect-mongodb-session')(session);
 
-var store = new MongoDBStore({
+/* var store = new MongoDBStore({
   uri: mongoServer,
   databaseName: 'sessions',
   collection: 'usersessions'
-});
+}); */
+
 
 app.use(session({
     secret: 'adgaigdj3wakg23o2323_3311fasa',
@@ -38,6 +39,12 @@ app.use(session({
     saveUninitialized: false,
     store: store
   }));  
+  
+var store = new MongoDBStore({
+    uri: mongoServer,
+    databaseName: 'sessions',
+    collection: 'usersessions'
+  });
 
   var auth = function(req, res, next) {
     if (req.session.user)
@@ -105,6 +112,8 @@ MongoClient.connect(mongoServer, {useNewUrlParser: true, useUnifiedTopology: tru
         console.log("Creating Sussex user account if none...");
     }); */
 });
+
+
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -210,32 +219,67 @@ function CreateProcedure(inf,procedureID,patientID, pid_DIR){
                         }
                     }
                 var procedureObject = {
+                    //internal data
                     procedureID: procedureID,
                     new: true,
-                    patientID: patientID,
-                    examDate: inf[4].slice(11,23),
-                    examStart: inf[5].slice(12,20), //cuts off seconds
-                    examEnd: inf[6].slice(10,18),
-                    procedureDate: inf[4].slice(11,23) + " " + inf[5].slice(12,17),
-                    patientName: inf[8].slice(3, -1),
-                    patientDOB: inf[9].slice(6,-1),
-                    patientAge: inf[10].slice(6,-1),
-                    patientSex: inf[11].slice(7,-1),
-                    clinic: inf[12].slice(3, -1),
-                    proceduralist: inf[13].slice(4,-1),
-                    reason: '',
-                    findings: '',
-                    bowelPreparation: '',
-                    polyps: '',
-                    completeColon: '',
-                    haemorrhoids: '',
-                    followUpRadio: '',
-                    followUpDetails: '',
-                    followUpDiscuss: '',
-                    followUpDate: '',
                     imgs:imgList,
                     imgTotal: imgList.length,
                     diagramImg: null,
+                    examDateAndTime: inf[4].slice(11,23) + " " + inf[5].slice(12,17),
+                    //Surgery Selection
+                    surgerySelection: "",
+                    surgeryName: inf[12].slice(3, -1),
+                    surgeryAddress1: "",
+                    surgeryAddress2: "",
+                    //Patient Section
+                    patientID: patientID,
+                    patientName: inf[8].slice(3, -1),
+                    patientDOB: inf[9].slice(6,-1),
+                    patientAge:inf[10].slice(6,-1),
+                    patientMedicare:"",
+                    patientSex:inf[11].slice(7,-1),
+                    patientEmail:"",
+                    patientPhone: "",
+                    //Procedure Section
+                    examDate:inf[4].slice(11,23),
+                    examStart:inf[5].slice(12,20),
+                    examEnd:inf[6].slice(10,18),
+                    recordNumber:"",
+                    refferingPhysician:"",
+                    endoscopist:inf[13].slice(4,-1),
+                    proceduePerformed:"",
+                    indicationsForExamination:"",
+                    findings:"",
+                    endoscopicDiagnosis:"",
+                    recommendations:"",
+                    instruments:"",
+                    qualityOfBowelPrep:"",
+                    withdrawalTime:"",
+                    extentOfExam:"",
+                    landmarksIndentified:"",
+                    visualization:"",
+                    tolerance:"",
+                    complications:"",
+                    limitations:"",
+                    procedureTechnique:"",
+                    //bowel prep section
+                    bostonBowelPrepScore:"",
+                    rightColon:"",
+                    tranverseColon:"",
+                    leftColon:"",
+                    colonTotal:"",
+                    //pathology section
+                    tissueSubmitted:"",
+                    //discharge info section
+                    followingProcedurePerformed:"",
+                    toAidInComplications:"",
+                    dischargedTo:"",
+                    prescriptionsGivenToPatient:"",
+                    appointmentInformation:"",
+                    additionalInstructions:"",
+                    //codes section
+                    cptCode:"",
+                    icdCode:""
                 }
                 proceduresdb.collection('procedures').insertOne(procedureObject, function(err,result) {
                     if(err){console.log(err)};
@@ -270,6 +314,7 @@ app.get("/", function(req, res) {
 });
 
 app.get('/editprocedure/:procedureID', (req, res) => {
+    console.log("HERE");
     //var theId = MongoDb.ObjectId(req.params.procedureid);
     var openProcedureQuery = {
         procedureID: req.params.procedureID
@@ -328,17 +373,6 @@ app.get('/setup', (req, res) => {
     });
 }); */
 
-app.get('/reasons', (req, res) => {
-    res.render('setupsingle',{
-        loggedInName:req.session.name,
-        loggedInTag:req.session.tag,
-        localAddress:localAddress,
-        single: 'reason',
-        plural: 'reasons',
-        displayName: 'Reasons'
-    });
-});
-
 app.get('/findings', (req, res) => {
     res.render('setupsingle',{
         loggedInName:req.session.name,
@@ -350,6 +384,18 @@ app.get('/findings', (req, res) => {
     });
 });
 
+
+app.get('/savedlists/:dataName/:displayName', (req, res) => {
+    console.log("ER")
+    console.log({data: req.params.dataName, data2: req.params.dataName2})
+    res.render('setupsingle',{
+        loggedInName:req.session.name,
+        loggedInTag:req.session.tag,
+        localAddress:localAddress,
+        dataName: req.params.dataName,
+        displayName: req.params.displayName
+    });
+});
 
 //API SERVER START //////////////////////////////////////////////////////////////////////////////////////
 
@@ -370,7 +416,7 @@ app.post('/logincheck', function (req, res) {
           }
         }
       });
-      if (loggedIn == true){
+      if (loggedIn === true){
         res.redirect('home');
       }
       else{
@@ -392,32 +438,34 @@ app.get("/sign_out", function(req, res) {
 //PROCEDURES
 
 app.post('/updateprocedure/', (req,res) =>{
+    console.log("UPDATE PROCEDURE START:");
     console.log(req.body)
+    console.log("UPDATE PROCEDURE END");
     req.body.new = false;
     var updateProcedureQuery = {
         procedureID: req.body.procedureID
     }
-    if (req.body.bowelPreparation == null){ req.body.bowelPreparation = "No"}
-    if (req.body.polyps == null){ req.body.polyps = "No";}
-    if (req.body.completeColon == null){ req.body.completeColon = "No";}
-    if (req.body.haemorrhoids == null){ req.body.haemorrhoids = "No";}
-    if (req.body.diverticularDisease == null){ req.body.diverticularDisease = "No";}
-    
     proceduresdb.collection('procedures').deleteOne(updateProcedureQuery).then (function(result) {
         if(result.deletedCount == 1){console.log("Record " + req.body.procedureID + " cleared")}
         else{console.log("Record: " + req.body.procedureID + " not cleared")}
+        console.log(req.body.imgs.length);
+        let imgDataArray = [req.body.imgData0, req.body.imgData1, req.body.imgData2, req.body.imgData3];
+        console.log(imgDataArray[0]);
+        console.log({imgDataArray: imgDataArray.length})
         proceduresdb.collection('procedures').insertOne(req.body, function(err,result) {
-            var base64Data = req.body.imgdata.replace(/^data:image\/png;base64,/, "");
-            require("fs").writeFile( imgSrvDrive + "/"+ req.body.procedureID + "/" + "diagram.png", base64Data, 'base64', function(err) {
-                if(err){console.log(err)};
-                console.log('Record:' + req.body.procedureID + ' recreated.');
-                if (req.body.printNow == "yes"){
-                    res.redirect('printprocedure/' + req.body.procedureID)
-                }
-                else{
-                    res.redirect('viewprocedures');
-                }
-            });
+            for (let index = 0; index < req.body.imgs.length; index++) {
+                var base64Data = imgDataArray[index].replace(/^data:image\/png;base64,/, "");
+                require("fs").writeFile( imgSrvDrive + "/"+ req.body.procedureID + "/" + `diagram${index}.png`, base64Data, 'base64', function(err) {
+                    if(err){console.log(err)};
+                    console.log('Record:' + req.body.procedureID + ' recreated.');
+                });
+            }
+            if (req.body.printNow == "yes"){
+                res.redirect('printprocedure/' + req.body.procedureID)
+            }
+            else{
+                res.redirect('viewprocedures');
+            }
         });
     });
 })
@@ -458,12 +506,10 @@ app.get('/imgsrv/:imagename', (req, res) => {
 
 //SETUP
 
-app.post('/setupnew/:collection', (req, res) => {
-    console.log(req.body);
-    setupdb.collection(req.params.collection).insertOne(req.body).then (function() {
-        console.log('ok')
+app.post('/setupnew/:dataName/:displayName', (req, res) => {
+    setupdb.collection(req.params.dataName).insertOne(req.body).then (function() {
+        res.redirect(`/savedlists/${req.params.dataName}/${req.params.displayName}`);
     });
-    res.redirect('/' + req.params.collection + '');
 });
 
 app.get('/setupget/:collection', (req, res) => {
@@ -481,5 +527,4 @@ app.post('/setupdelete/:collection', (req, res) => {
         res.send(response);
     });
 });
-
 

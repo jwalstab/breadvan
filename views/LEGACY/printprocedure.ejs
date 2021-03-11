@@ -1,0 +1,107 @@
+<script type="text/javascript" src="/js/moment.min.js"></script>
+<script type="text/javascript" src="/js/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/daterangepicker.css" />
+<link href="/css/select2.min.css" rel="stylesheet" />
+<script src="/js/select2.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/css/A4.css" />
+
+<div class="A4" id="printableArea">
+        <img style="float: left; margin: 0px 0px 0px 0px;" src="/img/sdslogo.jpg"/>
+        <img style="float: right; margin: 0px 0px 0px 0px;" src="/img/idsmall.png"/>
+        <br>
+        <div style="text-align: center"><h2>Colonoscopy Report</h1></div>
+        <br>
+        <form action="/updateprocedure" method="POST">
+                <h3>Admin</h3>
+                <p><strong>Procedure Date:&nbsp;</strong><%= data.procedureDate %> &nbsp;&nbsp;&nbsp; <strong>Clinic:&nbsp;</strong><%= data.clinic %> &nbsp;&nbsp;&nbsp; <strong>Proceduralist:&nbsp;</strong><%= data.proceduralist %></p>
+                <p><strong>Patient ID:&nbsp;</strong><%= data.patientID %> &nbsp;&nbsp;&nbsp; <strong> Patient Name:&nbsp;</strong><%= data.patientName %> &nbsp;&nbsp;&nbsp; <strong>Patient DOB:&nbsp;</strong><%= data.patientDOB %>&nbsp;&nbsp;&nbsp; <strong>Patient Age:&nbsp;</strong><%= data.patientAge %>&nbsp;&nbsp;&nbsp; <strong>Patient Sex:&nbsp;</strong><%= data.patientSex %></p>
+                <h3>Procedure Information</h3>
+                <p><strong>Reason for procedure:&nbsp;</strong><%= data.reason %></p>
+                <p><strong>Findings:&nbsp;</strong><%= data.findings %></p>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="inlineCheckbox1" name="bowelPreparation" value="Yes"  <%= data.bowelPreparation == "Yes" ? "checked" : "" %>> Bowel Preparation
+                  </label>
+                <label class="checkbox-inline">
+                <input type="checkbox" id="inlineCheckbox1" name="polyps" value="Yes"  <%= data.polyps == "Yes" ? "checked" : "" %>> Polyps
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="inlineCheckbox2" name="completeColon" value="Yes"<%= data.completeColon == "Yes" ? "checked" : "" %>> Complete Colonoscopy
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="inlineCheckbox3" name="haemorrhoids" value="Yes"<%= data.haemorrhoids == "Yes" ? "checked" : "" %>> Haemorrhoids
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="inlineCheckbox3" name="diverticularDisease" value="Yes"<%= data.diverticularDisease == "Yes" ? "checked" : "" %>> Diverticular Disease
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="inlineCheckbox3" value="Yes" <%= data.colitis == "Yes" ?  "checked" : "" %>> Colitis
+                </label>
+                <br><br>
+                <div id = "img-container">
+                    <img src ="/imgsrv/<%= data.procedureID %>/diagram.png" id="diagram-image">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[0] %>" id="img0" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[1] %>" id="img1" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[2] %>" id="img2" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[3] %>" id="img3" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[4] %>" id="img4" width="245" height="245">
+                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[5] %>" id="img5" width="245" height="245">
+                </div>
+                <br><br>
+                <label class="control-label">Follow up with doctor required:</label>
+                <label class="checkbox-inline">
+                    <input type="radio" id="followupradio1" name="followupradio" <%= data.followupradio == "yes" ? "checked" : "" %> value="yes"> Yes
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="radio" id="followupradio2" name="followupradio" <%= data.followupradio == "no" ? "checked" : "" %> value="no"> No
+                    </label>
+                </label>
+                <br>
+                <p><strong>If yes, details:&nbsp;</strong><%= data.followUpDetails %></p>
+                <br>
+                <p><strong>Recommended timeframe for follow up colonoscopy:&nbsp;</strong><%= data.followUpDate %></p>
+                <p>Or</p>
+                <input type="checkbox" id="inlineCheckbox2" value="Yes" name="followUpDiscuss" <%= data.followUpDiscuss == "Yes" ? "checked" : "" %> > To be discussed at your follow up appointment
+                <br><br><br>
+                <p style="float:right">Doctor signature:  ______________________________________</p>
+        </form>
+        
+</div>
+
+
+
+<script>
+
+setTimeout(function(){LoadPictures();}, 2000);
+function LoadPictures(){
+    for (let index = 0; index < 6; index++) {
+        var imgToCheck = document.getElementById('img' + index);
+        if (imgToCheck.naturalWidth === 0) {
+            imgToCheck.src = "/img/245blank.jpg"
+        }
+        else{
+        console.log("pic ok")
+        }
+    }
+}
+
+
+
+</script>
+
+
+
+<script>
+    setTimeout(function(){printDiv('printableArea');}, 1000);
+        function printDiv(divName) {
+          //document.getElementById('submitButton').style.visibility = 'hidden';
+          var printContents = document.getElementById(divName).innerHTML;
+          var originalContents = document.body.innerHTML;
+     
+          document.body.innerHTML = printContents;
+          window.print();
+          document.body.innerHTML = originalContents;
+          window.location.replace("<%= localAddress %>/viewprocedures")
+          //document.getElementById('submitButton').style.visibility = 'visible';
+     }
+</script>

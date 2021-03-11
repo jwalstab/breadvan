@@ -1,75 +1,118 @@
-<script type="text/javascript" src="/js/moment.min.js"></script>
-<script type="text/javascript" src="/js/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="/css/daterangepicker.css" />
-<link href="/css/select2.min.css" rel="stylesheet" />
-<script src="/js/select2.min.js"></script>
 
-<link rel="stylesheet" type="text/css" href="/css/A4.css" />
+<div id ="printableArea">
+    <div class="A4" style="position: relative;">
+        <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[0] %>" id="img0" width="200" height="200" style="position: absolute; top: 200px; right:10px;">
+        <img src ="/imgsrv/<%= data.procedureID %>/diagram0.png" id="diagram0" width="200" height="200" style="position: absolute; top: 200px; right:10px;">
+        <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[1] %>" id="img1" width="200" height="200" style="position: absolute; top: 420px; right:10px;">
+        <img src ="/imgsrv/<%= data.procedureID %>/diagram1.png" id="diagram1" width="200" height="200" style="position: absolute; top: 420px; right:10px;">
+        <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[2] %>" id="img1" width="200" height="200" style="position: absolute; top: 640px; right:10px;">
+        <img src ="/imgsrv/<%= data.procedureID %>/diagram2.png" id="diagram1" width="200" height="200" style="position: absolute; top: 640px; right:10px;">
+        <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[3] %>" id="img1" width="200" height="200" style="position: absolute; top: 860px; right:10px;">
+        <img src ="/imgsrv/<%= data.procedureID %>/diagram3.png" id="diagram1" width="200" height="200" style="position: absolute; top: 860px; right:10px;">
 
-<div class="A4" id="printableArea">
-        <img style="float: left; margin: 0px 0px 0px 0px;" src="/img/sdslogo.jpg"/>
-        <img style="float: right; margin: 0px 0px 0px 0px;" src="/img/idsmall.png"/>
-        <br>
-        <div style="text-align: center"><h2>Colonoscopy Report</h1></div>
-        <br>
-        <form action="/updateprocedure" method="POST">
-                <h3>Admin</h3>
-                <p><strong>Procedure Date:&nbsp;</strong><%= data.procedureDate %> &nbsp;&nbsp;&nbsp; <strong>Clinic:&nbsp;</strong><%= data.clinic %> &nbsp;&nbsp;&nbsp; <strong>Proceduralist:&nbsp;</strong><%= data.proceduralist %></p>
-                <p><strong>Patient ID:&nbsp;</strong><%= data.patientID %> &nbsp;&nbsp;&nbsp; <strong> Patient Name:&nbsp;</strong><%= data.patientName %> &nbsp;&nbsp;&nbsp; <strong>Patient DOB:&nbsp;</strong><%= data.patientDOB %>&nbsp;&nbsp;&nbsp; <strong>Patient Age:&nbsp;</strong><%= data.patientAge %>&nbsp;&nbsp;&nbsp; <strong>Patient Sex:&nbsp;</strong><%= data.patientSex %></p>
-                <h3>Procedure Information</h3>
-                <p><strong>Reason for procedure:&nbsp;</strong><%= data.reason %></p>
-                <p><strong>Findings:&nbsp;</strong><%= data.findings %></p>
-                <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox1" name="bowelPreparation" value="Yes"  <%= data.bowelPreparation == "Yes" ? "checked" : "" %>> Bowel Preparation
-                  </label>
-                <label class="checkbox-inline">
-                <input type="checkbox" id="inlineCheckbox1" name="polyps" value="Yes"  <%= data.polyps == "Yes" ? "checked" : "" %>> Polyps
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox2" name="completeColon" value="Yes"<%= data.completeColon == "Yes" ? "checked" : "" %>> Complete Colonoscopy
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox3" name="haemorrhoids" value="Yes"<%= data.haemorrhoids == "Yes" ? "checked" : "" %>> Haemorrhoids
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox3" name="diverticularDisease" value="Yes"<%= data.diverticularDisease == "Yes" ? "checked" : "" %>> Diverticular Disease
-                </label>
-                <label class="checkbox-inline">
-                    <input type="checkbox" id="inlineCheckbox3" value="Yes" <%= data.colitis == "Yes" ?  "checked" : "" %>> Colitis
-                </label>
-                <br><br>
-                <div id = "img-container">
-                    <img src ="/imgsrv/<%= data.procedureID %>/diagram.png" id="diagram-image">
-                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[0] %>" id="img0" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[1] %>" id="img1" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[2] %>" id="img2" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[3] %>" id="img3" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[4] %>" id="img4" width="245" height="245">
-                    <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[5] %>" id="img5" width="245" height="245">
-                </div>
-                <br><br>
-                <label class="control-label">Follow up with doctor required:</label>
-                <label class="checkbox-inline">
-                    <input type="radio" id="followupradio1" name="followupradio" <%= data.followupradio == "yes" ? "checked" : "" %> value="yes"> Yes
-                    </label>
-                    <label class="checkbox-inline">
-                        <input type="radio" id="followupradio2" name="followupradio" <%= data.followupradio == "no" ? "checked" : "" %> value="no"> No
-                    </label>
-                </label>
-                <br>
-                <p><strong>If yes, details:&nbsp;</strong><%= data.followUpDetails %></p>
-                <br>
-                <p><strong>Recommended timeframe for follow up colonoscopy:&nbsp;</strong><%= data.followUpDate %></p>
-                <p>Or</p>
-                <input type="checkbox" id="inlineCheckbox2" value="Yes" name="followUpDiscuss" <%= data.followUpDiscuss == "Yes" ? "checked" : "" %> > To be discussed at your follow up appointment
-                <br><br><br>
-                <p style="float:right">Doctor signature:  ______________________________________</p>
-        </form>
+        <p class="heading" style="position: absolute; top: 0px; left:10px;">Procedure Report</p>
+        <p class="heading" style="position: absolute; top: 0px; right:10px">Colonoscopy</p>
+
+        <hr style="z-index: -10; width: 780px; position: absolute; top:10px; left:10px">
+
+        <img style="position: absolute; top: 35px; left: 5px; " src="/img/cslogo.png"/>
+        <!-- <img style="position: absolute; top: 45px; right:10px;" src="/img/idsmall.png"/> -->
+        <div class="patientIDbox" style="width:200px; height:100px; position: absolute; top: 45px; right:10px;">Patient ID Label</div>
+        <p class="text" style="position: absolute; top: 115px; left:10px">
+            <b><%= data.surgerySelection %><br>
+            <%= data.surgeryName %></b><br>
+            <%= data.surgeryAddress %><br>
+            Sydney, NSW 2000
+        </p>
+        <hr style="z-index: -10; width: 550px; position: absolute; top:175px; left:10px">
+
+        <p class="strongtext"  style="position: absolute; top: 190px; left:10px">
+            Patient Name:<br>
+            Medicare Number: <br>
+            Date of Birth:<br>
+            Record Number:<br>
+            Date & Time of Procedure:<br>
+            Reffering Physician:<br>
+            Endoscopist:
+        </p>
+
+        <p class="text" style="position: absolute; top: 190px; left:200px">
+            <%= data.patientName %><br>
+            <%= data.patientMedicare %><br>
+            <%= data.patientDOB %><br>
+            <%= data.recordNumber %><br>
+            <%= data.examDateAndTime %><br>
+            <%= data.refferingPhysican %><br>
+            <%= data.endoscopist %><br>
+        </p>
+        <hr style="z-index: -10; width:550px; position: absolute; top:300px; left:10px;">
+
+        <p class="text" style="position: absolute; top: 315px; left:10px; width:550px">
+            <b>Procedure Performed: </b>
+            <br>
+            <%= data.procedurePerformed %>
+            <br>
+            <b>Indications For Examination:</b>
+            <br>
+            <%= data.indicationsForExamination %>
+            <br>
+            <b>Findings: </b>
+            <br>
+            <%= data.findings %>
+            <br>
+            <b>Endoscopic Diagnosis:</b>
+            <br>
+            <%= data.endoscopicDiagnosis %>
+            <br>
+            <b>Recommendations:</b>
+            <br>
+            <%= data.recommendations %>
+        </p>
+
+        <hr style="z-index: -10; width:550px; position: absolute; top:555px; left:10px">
+
+        <p class="text" style="position: absolute; top: 570px; left:10px">
+            <b>INSTRUMENTS: </b><%= data.instruments %> 
+            <b> BOWEL PREP QUALITY: </b><%= data.qualityOfBowelPrep %>
+            <br>
+            <b>MEDICATIONS: </b><%= data.medications %>
+            <br>
+            <b>BOSTEN BOWEL PREP SCORE - </b>
+            <br>
+            <b>RIGHT COLON:</b> <%= data.rightColon %> <b>TRANVERSE COLON:</b> <%= data.tranvserseColon %> <b>LEFT COLON:</b> <%= data.leftColon %> <b>TOTAL COLON:</b> <%= data.totalColon %>
+            <br>
+            <b>WITHDRAWAL TIME: </b> <%= data.withdrawalTime %> <b>EXTENT OF EXAM: </b> <%= data.extentOfExam %> 
+            <br>
+            <b>LANDMARKS INDENTIFIED: </b> <%= data.landmarksIndentified %>
+            <br>
+            <b>VISUALIZATION: </b> <%= data.visualization %> <b>TOLERANCE: </b> <%= data.tolerance %> <b>COMPLICATIONS: </b> <%= data.complications %> <b>LIMITATIONS: </b> <%= data.limitations %>
+        </p>
+
+        <hr style="z-index: -10; width:550px; position: absolute; top:680px; left:10px">
+
+        <p class="text" style="width:550px; position: absolute; top: 695px; left:10px">
+            <b>Procedure Technique:</b>
+            <br>
+            <%= data.procedureTechnique %>
+        </p>
         
-</div>
+        <hr style="z-index: -10; width:550px; position: absolute; top:880px; left:10px">
 
-
-
+        <p class="text" style=" width:550px; position:absolute; top: 905px; left:10px;">
+            <b>CPT Code: </b>
+            <br>
+            <%= data.cptCode %>
+            <br>
+            <br>
+            <b>ICD Code: </b>
+            <br>
+            <%= data.icdCode %>
+            <br>
+        </p>
+        <p class="text" style=" width:550px; position:absolute; top: 1100px; left:10px;">
+            <b>signature: </b> ________________________________________  <%= data.endoscopist %>
+        </p>
+    </div>
 <script>
 
 setTimeout(function(){LoadPictures();}, 2000);
@@ -100,8 +143,8 @@ function LoadPictures(){
      
           document.body.innerHTML = printContents;
           window.print();
-          document.body.innerHTML = originalContents;
-          window.location.replace("<%= localAddress %>/viewprocedures")
+          //document.body.innerHTML = originalContents;
+          //window.location.replace("<%= localAddress %>/viewprocedures")
           //document.getElementById('submitButton').style.visibility = 'visible';
      }
 </script>

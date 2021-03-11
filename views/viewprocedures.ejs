@@ -36,7 +36,7 @@
 
 <script>
 
-var cols = ['procedureDate','patientID','patientName','proceduralist','clinic']
+var cols = ['examDateAndTime','patientID','patientName','endoscopist','surgeryName']
 var addedProcedures = ["DummyRecord"];
 var firstLoad = true;
 LoadTable();
@@ -110,7 +110,6 @@ function LoadTable(){
                 'Content-Type': 'application/json'
             }
         }
-        
         // send POST request
         fetch(APIURL + '/deleteprocedure', options)
             .then(res => res.json())
