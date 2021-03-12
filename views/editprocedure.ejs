@@ -4,19 +4,20 @@
 <link href="/css/select2.min.css" rel="stylesheet" />
 <script src="/js/select2.min.js"></script>
 
-<form action="/updateprocedure" method="POST">
+<form action="/updateprocedure" autocomplete="off" method="POST">
     <div class="psection">
         <h2>Clinic Section</h2>
-        <label class="control-label">Surgery Selection</label>
+        <label class="control-label">Surgery Selection:</label>
         <input type="text" id="surgeryselection" style="width: 220px;" name="surgerySelection" value="<%= data.surgerySelection %>">
-        <label class="control-label">Surgery Name</label>
+        <br>
+        <label class="control-label">Surgery Name:</label>
         <input type="text" id="surgeryname" style="width: 220px;" name="surgeryName" value="<%= data.surgeryName %>">
         <br>
         <br>
-        <label class="control-label">Surgery Address Line 1</label>
+        <label class="control-label">Surgery Address Line 1:</label>
         <input type="text" id="surgeryaddress1" style="width: 220px;" name="surgeryAddress1" value="<%= data.surgeryAddress1 %>">
         <br>
-        <label class="control-label">Surgery Address Line 2</label>
+        <label class="control-label">Surgery Address Line 2:</label>
         <input type="text" id="surgeryaddress2" style="width: 220px;" name="surgeryAddress2" value="<%= data.surgeryAddress2 %>">
     </div>
     <div class="psection">
@@ -61,25 +62,35 @@
         <label class="control-label">Procedure Performed:</label>
         <input type="text" id="procedureperformed" style="width: 140px;" name="procedurePerformed" value="<%= data.procedurePerformed %>">
         <br>
+
         <br>
         <label class="control-label">Indications for Examination:</label>
         <br>
         <input list="indicationsforexamination" name="indicationsForExamination" value="<%= data.indicationsForExamination %>" style="width: 800px;">
-        <datalist id="indicationsforexamination">    
-            <option value="Trans"/>
+        <datalist id="indicationsforexamination">
         </datalist>
+        <br>
         <br>
         <label class="control-label">Findings:</label>
         <br>
-        <textarea id="findings" name="findings" rows="2" cols="150" style="resize: none;"></textarea>
+        <input list="findings" name="findings" value="<%= data.findings %>" style="width: 800px;">
+        <datalist id="findings">
+        </datalist>
+        <br>
         <br>
         <label class="control-label">Endoscopic Diagnosis:</label>
         <br>
-        <textarea id="endoscopicdiagnosis" name="endoscopicDiagnosis" rows="2" cols="150" style="resize: none;" value="<%= data.endoscopicDiagnosis %>"></textarea>
+        <input list="endoscopicdiagnosis" name="endoscopicDiagnosis" value="<%= data.endoscopicDiagnosis %>" style="width: 800px;">
+        <datalist id="endoscopicdiagnosis">
+        </datalist>
+        <br>
         <br>
         <label class="control-label">Recommendations:</label>
         <br>
-        <textarea id="recommendations" name="recommendations" rows="2" cols="150" style="resize: none;" value="<%= data.recommendations %>"></textarea>
+        <input list="recommendations" name="recommendations" value="<%= data.recommendations %>" style="width: 800px;">
+        <datalist id="recommendations">
+        </datalist>
+        <br>
         <br>
         <br>
         <label class="control-label">Instruments:</label>
@@ -218,6 +229,16 @@
             <img src ="/imgsrv/<%= data.procedureID %>/<%= data.imgs[3] %>" id="img3" width="200" height="200">
         </div>
         <br>
+        <br>
+        <h2>Print procedure now?</h2>
+        <br>
+        <select id="printnow" name="printNow">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+        <br>
+        <br>
+        <br>
         <input type="hidden" name="imgData0" id="imgdatainput0" value="">
         <input type="hidden" name="imgData1" id="imgdatainput1" value="">
         <input type="hidden" name="imgData2" id="imgdatainput2" value="">
@@ -230,15 +251,14 @@
         <input type="hidden" name="imgs" id="imgs1" value="<%= data.imgs[1] %>">
         <input type="hidden" name="imgs" id="imgs2" value="<%= data.imgs[2] %>">
         <input type="hidden" name="imgs" id="imgs3" value="<%= data.imgs[3] %>">
-        <input type="hidden" name="printNow" id="printnow" value="no">
     </div>
-    <button type="submit" id="submitButton" onlick="SubmitAndPrint()" style="float: right;" class="btn btn-theme">Submit and Print</button>
-    <button type="submit" id="submitButton" style="float: right;" class="btn btn-theme">Submit Without Printing</button>
+    <button type="submit" id="submitButton" style="float: right;" class="btn btn-theme">Submit</button>
 </div>
 </form>
 
 <script>
     function SubmitAndPrint(){
+        console.log("HERE");
         document.getElementById('printnow').value = 'yes';
     }
 
@@ -401,37 +421,17 @@ function LoadPictures(){
 
 
 <script>
-/*    $('#reason').select2({
-      tags: true
-  });
-  fetch(APIURL + '/setupget/reasons')
-  .then((resp) => resp.json())
-  .then(function(data) {
-      data.forEach(element =>{
-          var newOption = new Option(element.reason, element.reason, false, false);
-          document.getElementById('reason').appendChild(newOption);
-      });
-  });
-  $('#findings').select2({
-    tags: true
-});
-fetch(APIURL + '/setupget/findings')
-.then((resp) => resp.json())
-.then(function(data) {
-    data.forEach(element =>{
-        var newOption = new Option(element.findings, element.findings, false, false);
-        document.getElementById('findings').appendChild(newOption);
-    });
-});*/
-let dataListArray = ['indicationsforexamination'];
-dataListArray.forEach(item =>{
-    let selectBox = document.getElementById(item);
+//this script loads the data for all the drop down select fields
+let dataListArray = ['indicationsForExamination','findings','endoscopicDiagnosis','recommendations'];
+dataListArray.forEach(item => {
+    console.log({item:item});
+    let selectBox = document.getElementById(item.toLocaleLowerCase());
     fetch(`${APIURL}/setupget/${item}`).then((resp) => resp.json()).then(function(data){
         data.forEach(listObject =>{
             let newOpt = document.createElement('option');
-            newOpt.value = listObject;
-            newopt.innerHTML = listObject;
-            selectBox.appendChild(newopt);
+            newOpt.value = listObject[item];
+            newOpt.innerHTML = listObject[item];
+            selectBox.appendChild(newOpt);
         })
     })
 })

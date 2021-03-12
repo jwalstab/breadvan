@@ -365,25 +365,6 @@ app.get('/setup', (req, res) => {
     });
 });
 
-/* app.get('/reasons', (req, res) => {
-    res.render('reasons',{
-        loggedInName:req.session.name,
-        loggedInTag:req.session.tag,
-        localAddress:localAddress
-    });
-}); */
-
-app.get('/findings', (req, res) => {
-    res.render('setupsingle',{
-        loggedInName:req.session.name,
-        loggedInTag:req.session.tag,
-        localAddress:localAddress,
-        single: 'findings',
-        plural: 'findings',
-        displayName: 'Findings'
-    });
-});
-
 
 app.get('/savedlists/:dataName/:displayName', (req, res) => {
     console.log("ER")
@@ -457,9 +438,9 @@ app.post('/updateprocedure/', (req,res) =>{
                 var base64Data = imgDataArray[index].replace(/^data:image\/png;base64,/, "");
                 require("fs").writeFile( imgSrvDrive + "/"+ req.body.procedureID + "/" + `diagram${index}.png`, base64Data, 'base64', function(err) {
                     if(err){console.log(err)};
-                    console.log('Record:' + req.body.procedureID + ' recreated.');
                 });
             }
+            console.log('Record:' + req.body.procedureID + ' recreated.');
             if (req.body.printNow == "yes"){
                 res.redirect('printprocedure/' + req.body.procedureID)
             }
