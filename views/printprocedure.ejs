@@ -143,8 +143,8 @@ function LoadPictures(){
      
           document.body.innerHTML = printContents;
           window.print();
-          //document.body.innerHTML = originalContents;
-          //window.location.replace("<%= localAddress %>/viewprocedures")
-          //document.getElementById('submitButton').style.visibility = 'visible';
+          document.body.innerHTML = originalContents;
+          window.location.replace("<%= localAddress %>/viewprocedures")
+          document.getElementById('submitButton').style.visibility = 'visible';
      }
 </script>

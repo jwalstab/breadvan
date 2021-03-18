@@ -27,14 +27,13 @@
         <label class="control-label">Patient Name:</label>
         <input type="text" id="patientName" style="width: 165px;" name="patientName" value="<%= data.patientName %>">
         <label class="control-label">Patient DOB:</label>
-        <input type="text" id="patientDOB" style="width: 120px;" name="patientDOB" value="<%= data.patientDOB %>">
+        <input type="date" id="patientDOB" style="width: 160px;" name="patientDOB" value="<%= data.patientDOB %>">
         <label class="control-label">Patient Age:</label>
         <input type="number" id="patientAge" style="width: 60px;" name="patientAge" value="<%= data.patientAge %>">
-        
+        <br>
+        <br>
         <label class="control-label">Patient Medicare:</label>
-        <input type="number" id="patientmedicare" style="width: 60px;" name="patientMedicare" value="<%= data.patientMedicare %>">
-        <br>
-        <br>
+        <input type="number" id="patientmedicare" style="width: 180px;" name="patientMedicare" value="<%= data.patientMedicare %>">
         <label class="control-label">Patient Sex:</label>
         <input type="text" id="patientSex" style="width: 60px;" name="patientSex" value="<%= data.patientSex %>">
         <label class="control-label">Patient Email:</label>
@@ -435,7 +434,6 @@ dataListArray.forEach(item => {
         })
     })
 })
-
 </script>
 
 
@@ -468,8 +466,15 @@ dataListArray.forEach(item => {
     document.getElementById('examdate').value = convertedExamDate;
 
 
-    document.getElementById('findings').value = `<%= data.findings %>`
-    document.getElementById('endoscopicdiagnosis').value = `<%= data.endoscopicDiagnosis %>`
-    document.getElementById('recommendations').value = `<%= data.recommendations %>`
-    document.getElementById('proceduretechnique').value = `<%= data.procedureTechnique %>`
+    document.getElementById('followingprocedureperformed').value = `<%= data.followingProcedurePerformed %>`
+    document.getElementById('toaidincomplications').value = `<%= data.toAidInComplications %>`
+    document.getElementById('prescriptionsgiventopatient').value = `<%= data.prescriptionsGivenToPatient %>`
+    document.getElementById('appointmentinformation').value = `<%= data.appointmentInformation %>`
+    document.getElementById('additionalinstructions').value = `<%= data.additionalInstructions %>`
+    document.getElementById('cptcode').value = `<%= data.cptCode %>`
+    document.getElementById('icdcode').value = `<%= data.icdCode %>`
+</script>
+
+<script>
+    
 </script>

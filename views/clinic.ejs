@@ -1,0 +1,18 @@
+
+<form action="/updateclinic" autocomplete="off" method="POST">
+    <div class="psection">
+        <h2>Default Clinic Setup</h2>
+        <label class="control-label">Surgery Selection:</label>
+        <input type="text" id="surgeryselection" style="width: 220px;" name="surgerySelection" value="<%= data.surgerySelection %>">
+        <br>
+        <label class="control-label">Surgery Name:</label>
+        <input type="text" id="surgeryname" style="width: 220px;" name="surgeryName" value="<%= data.surgeryName %>">
+        <br>
+        <label class="control-label">Surgery Address Line 1:</label>
+        <input type="text" id="surgeryaddress1" style="width: 220px;" name="surgeryAddress1" value="<%= data.surgeryAddress1 %>">
+        <br>
+        <label class="control-label">Surgery Address Line 2:</label>
+        <input type="text" id="surgeryaddress2" style="width: 220px;" name="surgeryAddress2" value="<%= data.surgeryAddress2 %>">
+    </div>
+    <button type="submit" id="submitButton" style="float: right;" class="btn btn-theme">Submit</button>
+</form>

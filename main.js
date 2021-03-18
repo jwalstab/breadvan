@@ -10,16 +10,16 @@ var os = require('os');
 var ifaces = os.networkInterfaces();
 //console.log(ifaces);
 
-//var localAddress = "http://" + ifaces.wlan0[0].address + ":3000"
-var localAddress = "http://" + ifaces.WLAN[0].address + ":3000"
+var localAddress = "http://" + ifaces.wlan0[0].address + ":3000"
+//var localAddress = "http://" + ifaces.WLAN[0].address + ":3000"
 
 console.log(localAddress);
 
 //var mongoServer = "mongodb://masteruser:Quantum4277@157.245.56.30:27017"
 var mongoServer = "mongodb://127.0.0.1:27017"
 
-var mediaDrive = path.join(__dirname, 'public/scanner');
-//var mediaDrive = '/media/medscan';
+//var mediaDrive = path.join(__dirname, 'public/scanner');
+var mediaDrive = '/media/medscan';
 var imgSrvDrive = path.join(__dirname, 'public/imgsrv');
 
 //SESSIONS//////
@@ -111,6 +111,23 @@ MongoClient.connect(mongoServer, {useNewUrlParser: true, useUnifiedTopology: tru
         if(err){console.log(err)};
         console.log("Creating Sussex user account if none...");
     }); */
+    
+    //check and add default clinic if needed
+    setupdb.collection('clinic').find({}).toArray(function(err, docs){
+    console.log('checking default clinic object exists');
+    if(docs[0] == null){
+        console.log('Default clinic does not exist, creating now');
+        docs[0] = {
+            surgerySelection: "",
+            surgeryName: "",
+            surgeryAddress1: "",
+            surgeryAddress2: ""
+        }
+    }
+    else{
+        console.log('Default clinic object found.');
+    }
+});
 });
 
 
@@ -144,7 +161,7 @@ function ScanForExtDrives(){
             console.log("Changed Detected!");
             extDrives.forEach(extDriveFolder => {
                 fs.readdir(mediaDrive + "/" + extDriveFolder + "/DCIM", function(err,dateFolders){
-                    if (err){console.log("ERROR AT DATE FOLDER LEVELS");}
+                    if (err){console.log(`ERROR AT DATE FOLDER LEVELS: ${extDriveFolder}`);}
                     if (dateFolders != null){
                         dateFolders.forEach(dateFolder => {
                             var dateFolderWithExtDrivePath = path.join(mediaDrive, extDriveFolder, "DCIM", dateFolder);
@@ -281,8 +298,18 @@ function CreateProcedure(inf,procedureID,patientID, pid_DIR){
                     cptCode:"",
                     icdCode:""
                 }
-                proceduresdb.collection('procedures').insertOne(procedureObject, function(err,result) {
-                    if(err){console.log(err)};
+                //setup default clinic settings
+                setupdb.collection('clinic').find({}).toArray(function(err, docs){
+                    if (procedureObject.surgeryName.length == 0){
+                        procedureObject.surgeryName = docs[0].surgeryName;
+                    }
+                    procedureObject.surgerySelection = docs[0].surgerySelection;
+                    procedureObject.surgeryAddress1 = docs[0].surgeryAddress1;
+                    procedureObject.surgeryAddress2 = docs[0].surgeryAddress2;
+                    //finally add actual procedure to database
+                    proceduresdb.collection('procedures').insertOne(procedureObject, function(err,result) {
+                        if(err){console.log(err)};
+                    });
                 });
             });
         }
@@ -365,6 +392,16 @@ app.get('/setup', (req, res) => {
     });
 });
 
+
+
+app.get('/clinic', (req, res) => {
+    res.render('clinic',{
+        loggedInName:req.session.name,
+        loggedInTag:req.session.tag,
+        localAddress:localAddress,
+        data: docs[0]
+    });
+});
 
 app.get('/savedlists/:dataName/:displayName', (req, res) => {
     console.log("ER")
@@ -455,6 +492,23 @@ app.get('/getprocedures', (req, res) => {
         res.send(docs);
     });
 });
+
+app.post('/updateclinic', (req, res) => {
+    setupdb.collection('clinic').deleteOne().then (function(err,docs) {
+        if(err) {
+            console.log(err);
+            //res.send(err);
+        };
+    });
+    setupdb.collection('clinic').insertOne(req.body).then (function(err,docs) {
+        if(err) {
+            console.log(err);
+            //res.send(err);
+        };
+    });
+    res.redirect('/home');
+});
+
 app.post('/deleteprocedure', (req, res) => {
     proceduresdb.collection('procedures').deleteOne(req.body).then (function(err,docs) {
         var response = {
@@ -498,6 +552,8 @@ app.get('/setupget/:collection', (req, res) => {
         res.send(docs);
     });
 });
+
+
 
 app.post('/setupdelete/:collection', (req, res) => {
     console.log(req.body);
