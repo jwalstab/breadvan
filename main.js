@@ -10,8 +10,24 @@ var os = require('os');
 var ifaces = os.networkInterfaces();
 //console.log(ifaces);
 
-var localAddress = "http://" + ifaces.wlan0[0].address + ":80"
+var localAddress;
+
+if (ifaces.wlan0 != undefined){
+    localAddress = "http://" + ifaces.wlan0[0].address + ":3000"
+}
+else if(ifaces.WLAN != undefined){
+    localAddress = "http://" + ifaces.WLAN[0].address + ":3000"
+}
+else if(ifaces.eth0 != undefined){
+    localAddress = "http://" + ifaces.eth0[0].address + ":3000"
+}
+else{
+    localAddress = 'http://127.0.0.1:3000'
+}
+
+//var localAddress = "http://" + ifaces.wlan0[0].address + ":3000"
 //var localAddress = "http://" + ifaces.WLAN[0].address + ":80"
+//var localAddress = "http://127.0.0.1:8"
 
 console.log(localAddress);
 
