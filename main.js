@@ -10,8 +10,8 @@ var os = require('os');
 var ifaces = os.networkInterfaces();
 //console.log(ifaces);
 
-//var localAddress = "http://" + ifaces.wlan0[0].address + ":80"
-var localAddress = "http://" + ifaces.WLAN[0].address + ":80"
+var localAddress = "http://" + ifaces.wlan0[0].address + ":80"
+//var localAddress = "http://" + ifaces.WLAN[0].address + ":80"
 
 console.log(localAddress);
 
