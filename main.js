@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 80
 var expressLayouts = require('express-ejs-layouts');
 const path = require('path');
 var fs = require('fs');
@@ -10,8 +10,8 @@ var os = require('os');
 var ifaces = os.networkInterfaces();
 //console.log(ifaces);
 
-var localAddress = "http://" + ifaces.wlan0[0].address + ":3000"
-//var localAddress = "http://" + ifaces.WLAN[0].address + ":3000"
+//var localAddress = "http://" + ifaces.wlan0[0].address + ":80"
+var localAddress = "http://" + ifaces.WLAN[0].address + ":80"
 
 console.log(localAddress);
 
@@ -395,12 +395,16 @@ app.get('/setup', (req, res) => {
 
 
 app.get('/clinic', (req, res) => {
-    res.render('clinic',{
-        loggedInName:req.session.name,
-        loggedInTag:req.session.tag,
-        localAddress:localAddress,
-        data: docs[0]
+    setupdb.collection('clinic').find({}).toArray (function(err,docs) {
+        console.log(docs)
+        res.render('clinic',{
+            loggedInName:req.session.name,
+            loggedInTag:req.session.tag,
+            localAddress:localAddress,
+            data: docs[0]
+        });
     });
+
 });
 
 app.get('/savedlists/:dataName/:displayName', (req, res) => {
